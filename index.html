@@ -3,195 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#efeae2">
+<meta name="theme-color" content="#15120f">
 <title>LADARA — работы: сайты, приложения, боты</title>
-<meta name="description" content="LADARA — студия: сайты, приложения и боты под ключ. Живые экспонаты: приложение «Женский мир», лендинги, витрины событий.">
+<meta name="description" content="Каталог работ студии LADARA: сайты, приложения и боты. Живые экспонаты — «Семь ремёсел», «Сексология и психология», «Женский мир».">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LADARA">
-<meta property="og:title" content="LADARA — работы">
-<meta property="og:description" content="Сайты, приложения и боты. Живые экспонаты: приложение «Женский мир», лендинги, витрины событий.">
-<meta property="og:image" content="https://makaka119911-oss.github.io/ladara/img/zh-banner.jpg">
-<meta property="og:image:width" content="2048">
-<meta property="og:image:height" content="1136">
+<meta property="og:title" content="LADARA — каталог работ">
+<meta property="og:description" content="Сайты, приложения и боты. Каждая работа — экспонат: можно подойти и рассмотреть.">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://makaka119911-oss.github.io/ladara/">
+<meta property="og:image" content="https://makaka119911-oss.github.io/ladara/img/og-museum.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#efeae2">
+<meta name="twitter:title" content="LADARA — каталог работ">
+<meta name="twitter:image" content="https://makaka119911-oss.github.io/ladara/img/og-museum.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="preload" as="image" href="img/hero-phone.jpg" media="(max-width:767px)">
+<link rel="preload" as="image" href="img/hero-desk.jpg" media="(min-width:768px)">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
-<a class="brand" href="#intro">LADARA</a>
+<a class="brand" href="#top">LADARA</a>
 <div class="rail" aria-hidden="true"><i id="railFill"></i></div>
-<div class="counter"><b id="hallNum">Вход</b><span id="hallTotal"></span></div>
+<div class="counter"><b id="hallNum">Обложка</b><span id="hallTotal"></span></div>
+<nav class="plan" id="plan" aria-label="План залов"></nav>
 
-<!-- ВХОД -->
-<header class="hall hall--intro" id="intro">
-  <div class="intro">
-    <p class="eyebrow">Студия LADARA · галерея работ</p>
-    <h1>Сайты, приложения,<br>боты</h1>
-    <p class="intro__lead"><span id="countWord">Шесть</span> экспонатов. Каждый — живой: можно открыть, потрогать, посмотреть в деле.
-       Идите вниз, как по залам музея. А если экспонат зацепит — нажмите на него и рассмотрите вблизи.</p>
-    <p class="intro__hint">▼ листайте</p>
+<!-- ОБЛОЖКА -->
+<header class="cover" id="top">
+  <div class="cover__media">
+    <picture>
+      <source media="(min-width:768px)" srcset="img/hero-desk.jpg">
+      <img src="img/hero-phone.jpg" alt="Тёмный зал музея: человек смотрит на светящееся полотно" fetchpriority="high">
+    </picture>
+  </div>
+  <div class="cover__inner">
+    <div class="cover__lead">
+      <p class="eyebrow" id="coverKicker">Каталог работ</p>
+      <h1 id="coverTitle">Сайты, приложения,<br>боты</h1>
+      <p class="cover__offer" id="coverOffer"></p>
+      <a class="cta" href="#exp" id="coverCta">Смотреть экспозицию</a>
+    </div>
+    <!-- перечень работ: виден сразу, без прокрутки -->
+    <nav class="index" id="coverIndex" aria-label="Работы"></nav>
   </div>
 </header>
 
-<!-- ЗАЛ I -->
-<section class="hall" data-hall="I">
-  <div class="hall__inner">
-    <p class="hall__label">Зал I · 2026</p>
-    <figure class="canvas canvas--wide">
-      <img src="img/zh-banner.jpg" alt="Женский мир — приложение" loading="eager">
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
+<!-- РАЗВОРОТЫ: рисуются из data.js -->
+<main id="spreads"></main>
+
+<noscript>
+  <section class="spread"><p class="label__title">Экспонаты: Семь ремёсел · Сексология и психология · Женский мир</p></section>
+</noscript>
+
+<!-- ПЕЧАТНЫЕ РАБОТЫ -->
+<section class="posters" id="posters">
+  <div class="posters__inner">
+    <p class="eyebrow" id="postersKicker"></p>
+    <h2 id="postersTitle"></h2>
+    <p class="posters__lead" id="postersLead"></p>
+    <div class="posters__wall" id="postersWall"></div>
+  </div>
+</section>
+
+<!-- МАСТЕР -->
+<section class="about" id="about">
+  <div class="about__inner">
+    <figure class="about__photo">
+      <img id="authorPhoto" src="img/autor.jpg" alt="Портрет автора" loading="lazy">
     </figure>
-    <div class="plaque">
-      <h2>Женский мир</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Приложение для женщин: цикл, дневник, женский круг, звонки, ассистентка Полина</dd></div>
-        <div><dt>Материалы</dt><dd>PWA на React, API на Node, Postgres, Redis, свой Whisper, свой видеосервер</dd></div>
-        <div><dt>Состояние</dt><dd>В работе, закрытый тест</dd></div>
-      </dl>
-      <a class="link" href="https://zhenskiy-mir.139-100-237-242.sslip.io/" target="_blank" rel="noopener">Открыть приложение</a>
+    <div class="about__text">
+      <p class="eyebrow" id="aboutKicker">Смотритель</p>
+      <h2 id="aboutTitle">Об авторе</h2>
+      <div id="aboutBody"></div>
+      <figure class="about__workshop">
+        <img id="authorWorkshop" src="img/about-workshop.jpg" alt="Рабочий стол в мастерской" loading="lazy">
+      </figure>
     </div>
   </div>
 </section>
 
-<!-- ЗАЛ II -->
-<section class="hall" data-hall="II">
-  <div class="hall__inner">
-    <p class="hall__label">Зал II · 2026</p>
-    <figure class="canvas canvas--wide">
-      <img src="img/remesla.jpg" alt="Семь ремёсел — лендинг" loading="lazy">
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
-    </figure>
-    <div class="plaque">
-      <h2>Семь ремёсел</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Лендинг видеокурсов ручной работы: галерея курсов, живые миниатюры, превью для мессенджеров</dd></div>
-        <div><dt>Материалы</dt><dd>Статичный сайт без библиотек: HTML, CSS, чистый JavaScript</dd></div>
-        <div><dt>Состояние</dt><dd>В сети</dd></div>
-      </dl>
-      <a class="link" href="https://makaka119911-oss.github.io/sem-remesel/" target="_blank" rel="noopener">Открыть сайт</a>
-    </div>
-  </div>
-</section>
+<!-- КОЛОФОН -->
+<footer class="colophon" id="contact">
+  <div class="colophon__media"><img src="img/outro.jpg" alt="Пустой зал музея с тёплым светом" loading="lazy"></div>
+  <div class="colophon__inner">
+    <p class="eyebrow" id="outroKicker">Конец экспозиции</p>
+    <h2 id="outroTitle">Нужно похожее?</h2>
+    <p class="colophon__lead" id="outroText"></p>
 
-<!-- ЗАЛ III -->
-<section class="hall" data-hall="III">
-  <div class="hall__inner">
-    <p class="hall__label">Зал III · 2026</p>
-    <figure class="canvas canvas--tall">
-      <img src="img/sexology-1.jpg" alt="Сексология — афиша" loading="lazy">
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
-    </figure>
-    <div class="plaque">
-      <h2>Сексология.com</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Сайт-витрина событий: афиши, расписание, запись. Плюс магазин и лендинги ретритов</dd></div>
-        <div><dt>Материалы</dt><dd>Статичный сайт, витрина из JSON, свой домен</dd></div>
-        <div><dt>Состояние</dt><dd>В сети</dd></div>
-      </dl>
-      <a class="link" href="https://xn--c1adkgfrbtc9l.com/" target="_blank" rel="noopener">Открыть сайт</a>
-    </div>
-  </div>
-</section>
-
-<!-- ЗАЛ IV — документ -->
-<section class="hall" data-hall="IV">
-  <div class="hall__inner">
-    <p class="hall__label">Зал IV · 2026</p>
-    <figure class="canvas canvas--sheet">
-      <div class="sheet" role="img" aria-label="Анкета libidoTesT">
-        <p class="sheet__kicker">Опросник</p>
-        <h3>libidoTesT</h3>
-        <div class="sheet__rows">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <p class="sheet__note">Бумажный бланк 1:1 и веб-версия</p>
+    <div class="colophon__cols">
+      <div>
+        <p class="colophon__k">Связаться</p>
+        <p><a class="cta" href="https://t.me/LADAR888" target="_blank" rel="noopener" id="contactTg">@LADAR888</a></p>
+        <p><a class="cta" href="mailto:makaka119911@gmail.com" id="contactMail">makaka119911@gmail.com</a></p>
       </div>
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
-    </figure>
-    <div class="plaque">
-      <h2>libidoTesT</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Анкета для честного разговора о желаниях: бумажный бланк и электронная форма</dd></div>
-        <div><dt>Материалы</dt><dd>Печатный бланк, вёрстка под заполнение с телефона</dd></div>
-        <div><dt>Состояние</dt><dd>В работе</dd></div>
-      </dl>
-    </div>
-  </div>
-</section>
-
-<!-- ЗАЛ V — документ -->
-<section class="hall" data-hall="V">
-  <div class="hall__inner">
-    <p class="hall__label">Зал V · 2026</p>
-    <figure class="canvas canvas--sheet">
-      <div class="sheet" role="img" aria-label="Платформа снабжения">
-        <p class="sheet__kicker">Платформа</p>
-        <h3>Снабжение</h3>
-        <div class="sheet__grid">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <p class="sheet__note">Заявки, поставщики, сметы</p>
+      <div>
+        <p class="colophon__k">Студия</p>
+        <p class="colophon__v">LADARA</p>
+        <p class="colophon__v" id="colophonYear"></p>
       </div>
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
-    </figure>
-    <div class="plaque">
-      <h2>Снабжение</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Внутренняя платформа для снабжения: заявки, поставщики, сметы, история цен</dd></div>
-        <div><dt>Материалы</dt><dd>Веб-приложение, база данных, роли и права</dd></div>
-        <div><dt>Состояние</dt><dd>Прототип</dd></div>
-      </dl>
-    </div>
-  </div>
-</section>
-
-<!-- ЗАЛ VI — документ -->
-<section class="hall" data-hall="VI">
-  <div class="hall__inner">
-    <p class="hall__label">Зал VI · 2026</p>
-    <figure class="canvas canvas--sheet">
-      <div class="sheet" role="img" aria-label="SunPride handmade">
-        <p class="sheet__kicker">Магазин</p>
-        <h3>SunPride</h3>
-        <div class="sheet__rows">
-          <span></span><span></span><span></span>
-        </div>
-        <p class="sheet__note">Витрина ручной работы и продвижение</p>
+      <div>
+        <p class="colophon__k">Экспонатов</p>
+        <p class="colophon__v" id="colophonCount"></p>
       </div>
-      <button class="zoom" aria-label="Рассмотреть">Рассмотреть</button>
-    </figure>
-    <div class="plaque">
-      <h2>SunPride</h2>
-      <dl>
-        <div><dt>Что это</dt><dd>Витрина изделий ручной работы и сопровождение: карточки, тексты, продвижение</dd></div>
-        <div><dt>Материалы</dt><dd>Вёрстка витрины, описания, работа с сообществом</dd></div>
-        <div><dt>Состояние</dt><dd>В работе</dd></div>
-      </dl>
     </div>
-  </div>
-</section>
-
-<!-- ФИНАЛ -->
-<footer class="hall hall--outro">
-  <div class="outro">
-    <p class="eyebrow">Конец экспозиции</p>
-    <h2>Нужно похожее?</h2>
-    <p>Расскажите задачу — сделаю так же: от идеи до живого адреса. Сайт, приложение, бот,
-       лендинг под запуск.</p>
-    <p class="outro__links">
-      <a class="link" href="https://t.me/LADAR888" target="_blank" rel="noopener">Телеграм @LADAR888</a>
-      <a class="link" href="mailto:makaka119911@gmail.com">makaka119911@gmail.com</a>
-    </p>
-    <p class="outro__note">Экспонаты живые: ссылки в табличках ведут на настоящие сайты.<br>
-      Студия LADARA · 2026</p>
+    <p class="colophon__note" id="outroNote"></p>
   </div>
 </footer>
 
-<!-- РЕЖИМ РАССМАТРИВАНИЯ -->
+<!-- РАССМАТРИВАНИЕ -->
 <div class="viewer" id="viewer" hidden>
   <button class="viewer__close" id="viewerClose" aria-label="Закрыть">✕</button>
   <button class="viewer__nav viewer__nav--prev" id="viewerPrev" aria-label="Предыдущий">‹</button>
@@ -206,6 +129,7 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="data.js?v=2"></script>
+<script src="script.js?v=2"></script>
 </body>
 </html>
