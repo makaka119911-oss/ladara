@@ -3,7 +3,6 @@
    в скролле, без blend/blur на весь экран, системную подсветку касания гасим. */
 :root{
   --wall:#efeae2;          /* штукатурка */
-  --wall-2:#e7e0d6;
   --ink:#2b2723;
   --dim:#5a5249;           /* затемнено под текстуру: на тёмных зёрнах было 4.0:1 */
   --line:rgba(43,39,35,.16);
@@ -20,7 +19,7 @@ html{scroll-behavior:smooth;scroll-snap-type:y proximity;background:var(--wall)}
    так зерно остаётся мелким и чётким даже на телефоне с плотным экраном. */
 body{margin:0;color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;
   background-color:var(--wall);
-  background-image:url('img/wall.jpg');
+  background-image:url('img/wall.jpg?v=2');
   background-repeat:repeat;
   background-size:480px 480px;
   overflow-x:hidden}
@@ -148,14 +147,3 @@ a,button{-webkit-tap-highlight-color:transparent}
   font:400 13px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--ink);
   transition:color .3s}
 .brand:hover{color:var(--bronze)}
-
-/* ===== ПРИМЕРКА СТЕНЫ: показывается только по адресу ?wall=demo ===== */
-.wallpick{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;display:none;
-  align-items:center;gap:4px;background:rgba(255,255,255,.92);border:1px solid var(--line);
-  border-radius:999px;padding:6px;box-shadow:0 14px 34px -14px rgba(43,39,35,.45)}
-.wallpick.is-on{display:flex}
-.wallpick b{font:500 10px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);
-  padding:0 10px 0 12px}
-.wallpick button{border:0;background:transparent;font:600 13px var(--sans);color:var(--ink);
-  padding:9px 18px;border-radius:999px;cursor:pointer;transition:background .3s,color .3s}
-.wallpick button.is-on{background:var(--ink);color:#fff}
