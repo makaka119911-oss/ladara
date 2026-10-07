@@ -52,24 +52,24 @@ a,button{-webkit-tap-highlight-color:transparent}
 p{margin:0}
 
 /* ---------- служебное ---------- */
-.brand{position:fixed;top:var(--s2);left:var(--pad);z-index:8;text-decoration:none;
+.brand{position:fixed;top:calc(var(--s3) + env(safe-area-inset-top,0px));left:var(--pad);z-index:8;text-decoration:none;
   font:500 var(--t1)/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;
   color:var(--ink);transition:color .5s var(--ease)}
 .rail{position:fixed;left:0;top:0;bottom:0;width:2px;background:var(--line);z-index:7}
 .rail i{display:block;width:100%;height:0;background:var(--bronze);transition:height .35s linear}
-.counter{position:fixed;top:var(--s2);right:var(--pad);z-index:8;text-align:right;
+.counter{position:fixed;top:calc(var(--s3) + env(safe-area-inset-top,0px));right:var(--pad);z-index:8;text-align:right;
   font-size:var(--t1);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .counter b{display:block;font-weight:500;color:var(--ink)}
 
 .plan{position:fixed;left:50%;bottom:var(--s2);transform:translateX(-50%);z-index:8;
   display:none;align-items:center;gap:var(--s1);padding:var(--s1);border-radius:999px;
-  background:rgba(18,15,12,.86);border:1px solid var(--line);
+  background:rgba(18,15,12,.72);border:1px solid var(--line);
   box-shadow:0 18px 40px -20px rgba(0,0,0,.9)}
 body.show-plan .plan{display:flex}
 .plan__lbl{font:500 var(--t1)/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;
   color:var(--dim);padding:0 var(--s2)}
-.plan a{display:grid;place-items:center;min-width:var(--s5);height:var(--s5);border-radius:999px;
-  font:500 var(--t2)/1 var(--sans);color:var(--dim);text-decoration:none;
+.plan a{display:grid;place-items:center;min-width:var(--s4);height:var(--s4);border-radius:999px;
+  font:500 var(--t1)/1 var(--sans);color:var(--dim);text-decoration:none;
   transition:background .35s var(--ease),color .35s var(--ease)}
 .plan a.on{background:var(--bronze);color:#20180f}
 @media (max-width:479px){ .plan__lbl{display:none} .plan a{min-width:var(--s4);height:var(--s4)} }
@@ -163,12 +163,17 @@ body.show-plan .plan{display:flex}
 @media (max-width:767px){ .about__inner{grid-template-columns:1fr} }
 .about__photo{margin:0}
 .about__photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px;
-  box-shadow:0 60px 120px -50px rgba(0,0,0,.9), 0 0 0 1px rgba(246,242,234,.08)}
+  /* мягкое растворение в стене: тот же приём, что у героя и колофона,
+     чтобы нигде не было резкой склейки */
+  -webkit-mask-image:radial-gradient(125% 122% at 50% 46%,#000 60%,rgba(0,0,0,.6) 84%,transparent 100%);
+          mask-image:radial-gradient(125% 122% at 50% 46%,#000 60%,rgba(0,0,0,.6) 84%,transparent 100%)}
 .about h2{font-size:var(--t7)}
 .about__text p{color:var(--dim);margin-top:var(--s3);max-width:56ch;font-size:var(--t4);line-height:1.5}
 .about__text>div p:first-child{margin-top:var(--s5)}
 .about__workshop{margin:var(--s6) 0 0}
-.about__workshop img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
+.about__workshop img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:2px;
+  -webkit-mask-image:radial-gradient(130% 126% at 50% 46%,#000 58%,rgba(0,0,0,.6) 84%,transparent 100%);
+          mask-image:radial-gradient(130% 126% at 50% 46%,#000 58%,rgba(0,0,0,.6) 84%,transparent 100%)}
 
 /* ---------- колофон ---------- */
 .colophon{position:relative;z-index:1;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}

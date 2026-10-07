@@ -136,8 +136,9 @@
         current = el; state = 'hall'; label = 'Зал ' + el.getAttribute('data-hall');
         var accent = el.getAttribute('data-accent');
         // на тёмной стене отсвет зала должен быть заметнее, чем на светлой
-        if (document.body.style.getPropertyValue('--hall-glow') !== accent + '33') {
-          document.body.style.setProperty('--hall-glow', accent + '33');
+        // 20% оказалось мало: на бою залы почти не различались по цвету (замер тестировщика)
+        if (document.body.style.getPropertyValue('--hall-glow') !== accent + '59') {
+          document.body.style.setProperty('--hall-glow', accent + '59');
         }
         planLinks.forEach(function (a, k) {
           var on = k === i;
