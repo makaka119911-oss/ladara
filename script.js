@@ -134,4 +134,23 @@
       raf = requestAnimationFrame(parallax);
     }, { passive: true });
   }
+  /* ---- примерка стены: включается адресом ?wall=demo, обычным гостям не видна ---- */
+  if (/[?&]wall=demo/.test(location.search)) {
+    var pick = document.createElement('div');
+    pick.className = 'wallpick is-on';
+    pick.innerHTML = '<b>Стена</b>';
+    [{ n: 'A', f: 'img/wall.jpg' }, { n: 'B', f: 'img/wall-2.jpg' }].forEach(function(w, i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = w.n;
+      if (i === 0) b.className = 'is-on';
+      b.addEventListener('click', function(){
+        document.body.style.backgroundImage = "url('" + w.f + "')";
+        [].slice.call(pick.querySelectorAll('button')).forEach(function(x){ x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+      });
+      pick.appendChild(b);
+    });
+    document.body.appendChild(pick);
+  }
 })();
