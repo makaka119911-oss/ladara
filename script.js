@@ -220,6 +220,11 @@
   var zoomable = book;
 
   var idx = 0, scale = 1, tx = 0, ty = 0, MIN = 1, MAX = 6;
+  // Трение за пределами допуска — как в PhotoSwipe (верх 0,05, низ 0,15):
+  // жест не «прилипает» к границе, а при отпускании возвращается в допуск.
+  var FRICTION_UP = .05;
+  // Ниже «единицы» трения нет — там жёсткий стоп: кадр меньше сцены оставил бы пустые поля,
+  // поэтому щипок ниже 1 сразу возвращает в 1× с нулевым сдвигом.
 
   if (hint) hint.textContent = coarse
     ? 'Тап — приблизить · двумя пальцами — свободно · ещё тап — вернуть'
@@ -254,7 +259,7 @@
     return { x: e.clientX - (st.left + st.width / 2), y: e.clientY - (st.top + st.height / 2) };
   }
 
-  var pointers = {}, lastDist = 0, moved = 0, downAt = null, multi = false;
+  var pointers = {}, pinch = null, moved = 0, downAt = null, multi = false;
   function pointerList() { return Object.keys(pointers).map(function (k) { return pointers[k]; }); }
   function dist() { var p = pointerList(); return Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y); }
 
@@ -262,7 +267,17 @@
     pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
     moved = 0; downAt = { x: e.clientX, y: e.clientY, t: Date.now() };
     if (pointerList().length === 1) multi = false;
-    if (pointerList().length === 2) { multi = true; lastDist = dist(); artBox.style.transition = 'none'; }
+    if (pointerList().length === 2) {
+      // Щипок привязываем к НАЧАЛУ жеста (приём PhotoSwipe): масштаб считается от исходного
+      // расстояния между пальцами, а не накоплением отношений шаг за шагом. При накоплении
+      // упор рассинхронизирует жест: свести и развести пальцы обратно давало 5x вместо 1x,
+      // а после верхнего упора возврат давал 1,71 вместо 2,00.
+      var p2 = pointerList(), st2 = stage.getBoundingClientRect();
+      pinch = { d0: Math.max(1, dist()), s0: scale, tx0: tx, ty0: ty,
+                mx: (p2[0].x + p2[1].x) / 2 - (st2.left + st2.width / 2),
+                my: (p2[0].y + p2[1].y) / 2 - (st2.top + st2.height / 2) };
+      multi = true; artBox.style.transition = 'none';
+    }
     try { stage.setPointerCapture(e.pointerId); } catch (err) { /* синтетические события */ }
   });
 
@@ -273,13 +288,20 @@
 
     if (pointerList().length === 2) {
       var d = dist();
-      if (lastDist > 0 && d > 0) {
-        var p = pointerList(), st = stage.getBoundingClientRect();
-        zoomAt(d / lastDist,
-               (p[0].x + p[1].x) / 2 - (st.left + st.width / 2),
-               (p[0].y + p[1].y) / 2 - (st.top + st.height / 2), false);
+      if (pinch && d > 1 && pinch.d0 > 1) {
+        var p = pointerList(), sr = stage.getBoundingClientRect();
+        var raw = pinch.s0 * (d / pinch.d0);            // масштаб — функция расстояния пальцев
+        var target = raw > MAX ? MAX + (raw - MAX) * FRICTION_UP : raw;
+        var k = target / pinch.s0;
+        var cur = { x: (p[0].x + p[1].x) / 2 - (sr.left + sr.width / 2),
+                    y: (p[0].y + p[1].y) / 2 - (sr.top + sr.height / 2) };
+        scale = target;
+        // панорама: точка, которая была под серединой пальцев в начале жеста, держится под ней и сейчас
+        tx = cur.x - (pinch.mx - pinch.tx0) * k;
+        ty = cur.y - (pinch.my - pinch.ty0) * k;
+        if (scale <= MIN + .001) { scale = 1; tx = 0; ty = 0; }
+        clampPan(); apply(false);
       }
-      lastDist = d;
       return;
     }
     if (scale > 1.02) {
@@ -290,8 +312,23 @@
     }
   });
 
+  // Отпустили пальцы: если щипок ушёл за допуск (трение), возвращаем в допуск анимацией.
+  // Масштабируем вокруг центра сцены — то, что видно, остаётся на месте.
+  function settlePinch() {
+    if (!pinch) return;
+    pinch = null;
+    var clamped = Math.min(MAX, Math.max(MIN, scale));
+    if (Math.abs(clamped - scale) < .001) return;
+    if (clamped <= MIN + .001) { resetZoom(); return; }
+    var k = clamped / scale;
+    tx *= k; ty *= k;
+    scale = clamped;
+    clampPan(); apply(true);
+  }
+
   function endPointer(e) {
     delete pointers[e.pointerId];
+    if (pointerList().length < 2) settlePinch();
     if (pointerList().length === 0 && downAt) {
       var quick = Date.now() - downAt.t < 400;
       // после щипка жест НЕ считается тапом — иначе зум сбрасывался бы сразу
@@ -301,11 +338,17 @@
       }
       downAt = null;
     }
-    lastDist = 0;
   }
   stage.addEventListener('pointerup', endPointer);
   stage.addEventListener('pointercancel', endPointer);
-  stage.addEventListener('pointerleave', endPointer);
+  stage.addEventListener('pointerleave', function (e) {
+    // пока палец захвачен (setPointerCapture), уход за границу сцены не должен рвать жест:
+    // иначе перетаскивание обрывалось бы у самого края кадра
+    var held = false;
+    try { held = !!(stage.hasPointerCapture && stage.hasPointerCapture(e.pointerId)); } catch (err) { held = false; }
+    if (held) return;
+    endPointer(e);
+  });
   stage.addEventListener('wheel', function (e) {
     e.preventDefault();
     var c = centerOf(e);
