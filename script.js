@@ -116,6 +116,15 @@
   }
   var planLinks = plan ? [].slice.call(plan.querySelectorAll('a')) : [];
 
+  /* плашка залов показывается по делу и гаснет: иначе висит поверх текста этикетки */
+  var planT = null;
+  function revealPlan(hold) {
+    if (!plan) return;
+    plan.classList.add('is-on');
+    if (planT) clearTimeout(planT);
+    planT = setTimeout(function () { plan.classList.remove('is-on'); }, hold || 2400);
+  }
+
   /* ---------- счётчик, свет зала, нить ---------- */
   var rail = document.getElementById('railFill');
   var numEl = document.getElementById('hallNum');
@@ -159,11 +168,13 @@
       document.body.classList.toggle('on-wall', state === 'wall' || state === 'hall');
       document.body.classList.toggle('show-plan', state === 'hall');
       document.body.classList.toggle('is-lit', state === 'hall');
+      if (state === 'hall') revealPlan(3200);   // пришёл новый зал — показали и следом погасили
     }
   }
   var tick = null;
   addEventListener('scroll', function () {
     if (reduce) { frame(); return; }
+    if (document.body.classList.contains('show-plan')) revealPlan(1800);
     if (tick) return;
     tick = true;
     requestAnimationFrame(function () { frame(); tick = null; });

@@ -22,9 +22,9 @@ window.MUSEUM = {
   author: {
     kicker: 'Смотритель',
     title: 'Об авторе',
-    photo: 'img/autor.jpg',
+    photo: 'img/autor.webp',
     photoAlt: 'Фото автора',
-    workshop: 'img/about-workshop.jpg',
+    workshop: 'img/about-workshop.webp',
     text: [
       'Делаю сайты, приложения и ботов. Работаю с Cursor и ИИ-агентами: они берут рутину, решения остаются за мной.',
       'Верстаю сам, без конструкторов — код остаётся под контролем. Мне важно, чтобы сделанная вещь работала тихо, точно и долго.'
