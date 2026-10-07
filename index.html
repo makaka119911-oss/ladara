@@ -196,8 +196,14 @@
   <button class="viewer__close" id="viewerClose" aria-label="Закрыть">✕</button>
   <button class="viewer__nav viewer__nav--prev" id="viewerPrev" aria-label="Предыдущий">‹</button>
   <button class="viewer__nav viewer__nav--next" id="viewerNext" aria-label="Следующий">›</button>
-  <div class="viewer__stage"><div class="viewer__art" id="viewerArt"></div></div>
-  <p class="viewer__caption" id="viewerCaption"></p>
+  <div class="viewer__stage" id="viewerStage">
+    <div class="viewer__art" id="viewerArt"></div>
+  </div>
+  <div class="viewer__foot">
+    <p class="viewer__caption" id="viewerCaption"></p>
+    <div class="viewer__info" id="viewerInfo"></div>
+    <p class="viewer__hint" id="viewerHint"></p>
+  </div>
 </div>
 
 <script src="script.js"></script>
