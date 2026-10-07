@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero-phone.jpg" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.jpg" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -62,9 +62,9 @@
 <!-- ПЕЧАТНЫЕ РАБОТЫ -->
 <section class="posters" id="posters">
   <div class="posters__inner">
-    <p class="eyebrow" id="postersKicker"></p>
-    <h2 id="postersTitle"></h2>
-    <p class="posters__lead" id="postersLead"></p>
+    <p class="eyebrow rv" id="postersKicker" style="--rv-d:0ms"></p>
+    <h2 class="rv" id="postersTitle" style="--rv-d:60ms"></h2>
+    <p class="posters__lead rv" id="postersLead" style="--rv-d:120ms"></p>
     <div class="posters__wall" id="postersWall"></div>
   </div>
 </section>
@@ -72,14 +72,14 @@
 <!-- МАСТЕР -->
 <section class="about" id="about">
   <div class="about__inner">
-    <figure class="about__photo">
+    <figure class="about__photo rv" style="--rv-d:0ms">
       <img id="authorPhoto" src="img/autor.webp" alt="Портрет автора" loading="lazy">
     </figure>
-    <div class="about__text">
+    <div class="about__text rv" style="--rv-d:120ms">
       <p class="eyebrow" id="aboutKicker">Смотритель</p>
       <h2 id="aboutTitle">Об авторе</h2>
       <div id="aboutBody"></div>
-      <figure class="about__workshop">
+      <figure class="about__workshop rv" style="--rv-d:200ms">
         <img id="authorWorkshop" src="img/about-workshop.webp" alt="Рабочий стол в мастерской" loading="lazy">
       </figure>
     </div>
@@ -89,12 +89,12 @@
 <!-- КОЛОФОН -->
 <footer class="colophon" id="contact">
   <div class="colophon__media"><img src="img/outro.jpg" alt="Пустой зал музея с тёплым светом" loading="lazy"></div>
-  <div class="colophon__inner">
+  <div class="colophon__inner rv">
     <p class="eyebrow" id="outroKicker">Конец экспозиции</p>
     <h2 id="outroTitle">Нужно похожее?</h2>
     <p class="colophon__lead" id="outroText"></p>
 
-    <div class="colophon__cols">
+    <div class="colophon__cols rv" style="--rv-d:160ms">
       <div>
         <p class="colophon__k">Связаться</p>
         <p><a class="cta" href="https://t.me/LADAR888" target="_blank" rel="noopener" id="contactTg">@LADAR888</a></p>
@@ -130,6 +130,6 @@
 </div>
 
 <script src="data.js?v=3"></script>
-<script src="script.js?v=4"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>

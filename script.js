@@ -23,7 +23,9 @@
   txt('coverCta', M.hero && M.hero.cta);
   txt('aboutKicker', M.author && M.author.kicker);
   txt('aboutTitle', M.author && M.author.title);
-  html('aboutBody', (M.author && M.author.text || []).map(function (p) { return '<p>' + p + '</p>'; }).join(''));
+  html('aboutBody', (M.author && M.author.text || []).map(function (p, i) {
+    return '<p class="rv" style="--rv-d:' + (140 + i * 80) + 'ms">' + p + '</p>';
+  }).join(''));
   var P = M.posters || {};
   txt('postersKicker', P.kicker);
   txt('postersTitle', P.title);
@@ -43,7 +45,7 @@
   var coverIndex = document.getElementById('coverIndex');
   if (coverIndex) {
     coverIndex.innerHTML = '<p class="index__cap">Экспозиция</p>' + works.map(function (w, i) {
-      return '<a href="#hall-' + (i + 1) + '">' +
+      return '<a class="rv rv--fast" style="--rv-d:' + (i * 40) + 'ms" href="#hall-' + (i + 1) + '">' +
         '<span class="index__n">' + (w.num || ('0' + (i + 1))) + '</span>' +
         '<span class="index__t">' + w.title + '<span class="index__l">' + (w.line || '') + '</span></span>' +
       '</a>';
@@ -61,10 +63,10 @@
 
     var plate;
     if (w.stub || !w.art) {
-      plate = '<div class="stub rv"><span class="stub__num">' + (w.num || '') + '</span>' +
+      plate = '<div class="stub rv" style="--rv-d:0ms"><span class="stub__num">' + (w.num || '') + '</span>' +
               '<span class="stub__note">экспонат готовится</span></div>';
     } else {
-      plate = '<figure class="plate rv"><img src="' + w.art + '" alt="' + w.title + '" loading="lazy">' +
+      plate = '<figure class="plate rv" style="--rv-d:0ms"><img src="' + w.art + '" alt="' + w.title + '" loading="lazy">' +
               '<button class="plate__zoom" aria-label="Рассмотреть">Рассмотреть</button></figure>';
     }
 
@@ -79,9 +81,9 @@
 
     sec.innerHTML =
       '<div class="spread__inner">' +
-        '<p class="spread__num rv">Зал ' + (w.hall || '') + ' · ' + (w.num || '') + (w.year ? ' · ' + w.year : '') + '</p>' +
+        '<p class="spread__num rv" style="--rv-d:80ms">Зал ' + (w.hall || '') + ' · ' + (w.num || '') + (w.year ? ' · ' + w.year : '') + '</p>' +
         plate +
-        '<div class="label rv">' +
+        '<div class="label rv" style="--rv-d:160ms">' +
           '<h2 class="label__title">' + w.title + '</h2>' +
           '<p class="label__line">' + (w.line || '') + '</p>' +
           '<div class="label__facts">' + facts + '</div>' +
@@ -96,7 +98,7 @@
   var posterItems = (P.items || []).filter(function (x) { return x && x.art; });
   if (wall) {
     wall.innerHTML = posterItems.map(function (p, i) {
-      return '<figure class="poster" id="poster-' + i + '">' +
+      return '<figure class="poster rv" style="--rv-d:' + ((i % 3) * 70) + 'ms" id="poster-' + i + '">' +
         '<img src="' + p.art + '" alt="' + p.title + '" loading="lazy">' +
         '<figcaption class="poster__cap"><b>' + p.title + '</b>' + (p.note || '') + '</figcaption>' +
       '</figure>';
@@ -125,6 +127,98 @@
     planT = setTimeout(function () { plan.classList.remove('is-on'); }, hold || 2400);
   }
 
+  /* ---------- появление ---------- */
+  var toReveal = [].slice.call(document.querySelectorAll('.rv'));
+  var pending = toReveal.slice();        // ещё не показанные
+  function reveal(el) {
+    el.classList.add('is-in');
+    var k = pending.indexOf(el);
+    if (k > -1) pending.splice(k, 1);
+  }
+  // Страховка. Прежняя версия раскрывала ВСЁ через 1,6 с и убивала появление при прокрутке.
+  // Новая двойная: (1) если наблюдатель вообще не отозвался за 1,2 с — раскрыть ступенькой
+  // (иначе на телефоне, где IntersectionObserver молчит, страница осталась бы невидимой);
+  // (2) на каждом кадре прокрутки показывать то, что уже попало в кадр. Второе гарантирует,
+  // что контент никогда не «залипнет» невидимым.
+  var ioAnswered = false;
+  function sweep() {
+    if (!pending || !pending.length) return;
+    for (var i = pending.length - 1; i >= 0; i--) {
+      var r = pending[i].getBoundingClientRect();
+      if (r.top < innerHeight * .94 && r.bottom > 0) reveal(pending[i]);
+    }
+  }
+  if ('IntersectionObserver' in window && !reduce) {
+    // Наблюдатель первичен: элемент проявляется, когда его правда видно.
+    // Раньше здесь стояла страховка, которая через 1,6 с раскрывала ВСЁ подряд —
+    // из-за неё появление при прокрутке не работало вообще (замер: 9 из 9 раскрыты,
+    // ни один не был в кадре).
+    var io = new IntersectionObserver(function (es) {
+      ioAnswered = true;
+      es.forEach(function (e) { if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); } });
+    }, { threshold: .15, rootMargin: '0px 0px -6% 0px' });
+    toReveal.forEach(function (el) { io.observe(el); });
+    setTimeout(function () { if (!ioAnswered) revealAll(40); }, 1200);
+  } else {
+    revealAll(40);
+  }
+  function revealAll(step) {
+    (pending || []).slice().forEach(function (el, i) {
+      if (!el.style.getPropertyValue('--rv-d')) el.style.setProperty('--rv-d', Math.min(i, 6) * step + 'ms');
+      reveal(el);
+    });
+  }
+
+  /* ---------- лёгкий параллакс (приём ScrollTrigger: движение от позиции, не от времени) ----------
+     Ставим только там, где структура уже готова: у обложки и колофона слой медиа лежит
+     position:absolute с overflow:hidden, поэтому сдвиг ничего не обнажает.
+     На карточках залов и на портрете параллакс сознательно НЕ делаем: там картинка занимает
+     ровно свою рамку (а у портрета ещё и растворённые края — масштаб срезал бы перо). */
+  var parallax = [];
+  if (!reduce) {
+    [['.cover__media img', '.cover__media'], ['.colophon__media img', '.colophon__media']]
+      .forEach(function (pair) {
+        var img = document.querySelector(pair[0]), box = document.querySelector(pair[1]);
+        if (img && box) parallax.push({ img: img, box: box });
+      });
+  }
+  function moveParallax() {
+    if (!parallax || !parallax.length) return;
+    var vh = innerHeight;
+    for (var i = 0; i < parallax.length; i++) {
+      var box = parallax[i].box.getBoundingClientRect();
+      if (box.bottom < 0 || box.top > vh) continue;
+      var p = (box.top + box.height / 2 - vh / 2) / (vh / 2 + box.height / 2);
+      if (p < -1) p = -1; if (p > 1) p = 1;
+      parallax[i].img.style.setProperty('--py', (p * 26).toFixed(1) + 'px');
+    }
+  }
+
+  /* ---------- счётчик кадров: включается только флагом ?diag=1 ----------
+     Нужен, чтобы плавность можно было измерить НА ТЕЛЕФОНЕ, а не в headless-среде. */
+  if (/[?&]diag=1/.test(location.search)) {
+    var box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:8px;top:8px;z-index:99;padding:6px 8px;border-radius:8px;' +
+      'background:rgba(18,15,12,.88);color:#f2ece2;font:500 12px/1.35 monospace;pointer-events:none';
+    box.textContent = 'счётчик: прокрутите страницу';
+    document.body.appendChild(box);
+    var dn = 0, dlong = 0, dworst = 0, dt = performance.now(), dlast = dt;
+    (function dloop(now) {
+      var d = now - dlast; dlast = now;
+      if (d > 0) {
+        dn++;
+        if (d > 33) dlong++;
+        if (d > dworst) dworst = d;
+        if (now - dt >= 1000) {
+          box.textContent = Math.round(dn * 1000 / (now - dt)) + ' fps · >33мс ' +
+            Math.round(dlong / dn * 100) + '% · худший ' + Math.round(dworst) + 'мс';
+          dn = 0; dlong = 0; dworst = 0; dt = now;
+        }
+      }
+      requestAnimationFrame(dloop);
+    })(performance.now());
+  }
+
   /* ---------- счётчик, свет зала, нить ---------- */
   var rail = document.getElementById('railFill');
   var numEl = document.getElementById('hallNum');
@@ -135,7 +229,9 @@
   function frame() {
     var h = document.documentElement.scrollHeight - innerHeight;
     var p = h > 0 ? Math.min(1, Math.max(0, scrollY / h)) : 0;
-    if (rail) rail.style.height = (p * 100).toFixed(2) + '%';
+    if (rail) rail.style.transform = 'scaleY(' + p.toFixed(4) + ')';
+    moveParallax();
+    sweep();
 
     var mid = scrollY + innerHeight * .5;
     var current = null, state = 'cover', label = 'Обложка';
@@ -182,19 +278,6 @@
   addEventListener('resize', frame);
   frame();
   setInterval(frame, 500);        // страховка: счётчик жив и там, где кадры заморожены
-
-  /* ---------- появление ---------- */
-  var toReveal = [].slice.call(document.querySelectorAll('.rv'));
-  function reveal(el) { el.classList.add('is-in'); }
-  if ('IntersectionObserver' in window && !reduce) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); } });
-    }, { threshold: .15 });
-    toReveal.forEach(function (el) { io.observe(el); });
-  }
-  setTimeout(function () {
-    toReveal.forEach(function (el, i) { setTimeout(function () { reveal(el); }, i * 60); });
-  }, 1600);
 
   /* ---------- рассматривание: глубокий зум ---------- */
   var viewer = document.getElementById('viewer');

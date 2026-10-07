@@ -56,7 +56,8 @@ p{margin:0}
   font:500 var(--t1)/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;
   color:var(--ink);transition:color .5s var(--ease)}
 .rail{position:fixed;left:0;top:0;bottom:0;width:2px;background:var(--line);z-index:7}
-.rail i{display:block;width:100%;height:0;background:var(--bronze);transition:height .35s linear}
+.rail i{display:block;width:100%;height:100%;background:var(--bronze);
+  transform:scaleY(0);transform-origin:top;transition:transform .35s linear;will-change:transform}
 .counter{position:fixed;top:calc(var(--s3) + env(safe-area-inset-top,0px));right:var(--pad);z-index:8;text-align:right;
   font-size:var(--t1);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .counter b{display:block;font-weight:500;color:var(--ink)}
@@ -198,9 +199,26 @@ body.show-plan .plan{display:flex}
 .colophon__v{color:var(--on-dark);font-size:var(--t3)}
 .colophon__note{margin-top:var(--s6);font-size:var(--t2);color:rgba(246,242,234,.5)}
 
-/* ---------- появление ---------- */
-.rv{opacity:0;transform:translateY(var(--s4));transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+/* ---------- появление ----------
+   Задержка ступенькой берётся из --rv-d (ставит скрипт или разметка): сама приходит
+   к элементу в момент раскрытия, поэтому появление не «ждёт», а идёт по сетке.
+   Анимируем только прозрачность и transform — ни height, ни top. */
+.rv{opacity:0;transform:translateY(var(--rv-shift,var(--s4)));
+  transition:opacity 1.1s var(--ease) var(--rv-d,0ms),transform 1.1s var(--ease) var(--rv-d,0ms)}
 .rv.is-in{opacity:1;transform:none}
+/* быстрый вариант — для того, что видно сразу при загрузке (первый экран) */
+.rv--fast{--rv-shift:var(--s2);
+  transition:opacity .5s var(--ease) var(--rv-d,0ms),transform .5s var(--ease) var(--rv-d,0ms)}
+
+/* ---------- лёгкий параллакс ----------
+   Сдвиг считает скрипт в --py; трогаем только transform. Только там, где медиа-слой
+   уже лежит position:absolute внутри overflow:hidden — сдвиг ничего не обнажает.
+   Карточки залов и портрет не трогаем: там картинка ровно по рамке, а у портрета
+   ещё и растворённые края — масштаб срезал бы перо. */
+.cover__media img,.colophon__media img{transform:translate3d(0,var(--py,0px),0) scale(1.06);will-change:transform}
+@media (prefers-reduced-motion:reduce){
+  .cover__media img,.colophon__media img{transform:none;will-change:auto}
+}
 
 /* ---------- рассматривание ---------- */
 .viewer{position:fixed;inset:0;z-index:40;background:var(--dark);display:grid;grid-template-rows:1fr auto;
