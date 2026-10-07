@@ -254,8 +254,16 @@ body.show-plan .plan{display:flex}
 @media (min-width:768px){ .posters__wall{columns:3} }
 @media (min-width:1200px){ .posters__wall{columns:4} }
 .poster{break-inside:avoid;display:block;margin:0 0 var(--s5);cursor:zoom-in}
-.poster img{width:100%;border-radius:2px;
-  box-shadow:0 30px 70px -40px rgba(0,0,0,.9),0 0 0 1px rgba(246,242,234,.08)}
+/* Афиши — в багете. Материал прислан генератором, геометрия собрана кодом:
+   полоса багета повторяется зеркалом (стык повтора 0 из 255), углы митровые.
+   Один файл 17 КБ на все девять афиш и на любую их пропорцию. */
+:root{ --fr:6px }
+@media (min-width:768px){ :root{ --fr:8px } }
+@media (min-width:1200px){ :root{ --fr:10px } }
+.poster img{width:100%;border-radius:0;
+  border:var(--fr) solid transparent;
+  border-image:url('img/baget.webp') 36 / var(--fr) repeat;
+  box-shadow:0 30px 70px -40px rgba(0,0,0,.9)}
 .poster__cap{margin-top:var(--s2);font-size:var(--t2);color:var(--dim)}
 .poster__cap b{display:block;font-family:var(--serif);font-weight:400;font-size:var(--t3);color:var(--ink)}
-.poster:hover img{box-shadow:0 44px 90px -40px #000,0 0 0 1px rgba(201,161,94,.45)}
+.poster:hover img{box-shadow:0 44px 90px -40px #000,0 0 70px -30px rgba(201,161,94,.55)}
