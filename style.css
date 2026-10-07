@@ -5,9 +5,9 @@
   --wall:#efeae2;          /* штукатурка */
   --wall-2:#e7e0d6;
   --ink:#2b2723;
-  --dim:#6e665c;
-  --line:rgba(43,39,35,.14);
-  --bronze:#8a6a3b;        /* бронза табличек */
+  --dim:#645c52;           /* было #6e665c — на текстуре не хватало контраста */
+  --line:rgba(43,39,35,.16);
+  --bronze:#7a5a2e;        /* бронза табличек, затемнена под стену */
   --mat:#fbf9f5;           /* паспарту */
   --serif:'Prata',Georgia,serif;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -16,19 +16,27 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-snap-type:y proximity;background:var(--wall)}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;scroll-snap-type:none} }
+/* Стена — сгенерированная плитка, повторяется. Размер плитки в CSS меньше исходника:
+   так зерно остаётся мелким и чётким даже на телефоне с плотным экраном. */
 body{margin:0;color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;
-  background:
-    radial-gradient(120% 80% at 50% -10%,rgba(255,255,255,.55),transparent 60%),
-    var(--wall);
+  background-color:var(--wall);
+  background-image:url('img/wall.jpg');
+  background-repeat:repeat;
+  background-size:480px 480px;
   overflow-x:hidden}
+/* Свет сверху и мягкая виньетка — отдельным слоем, СТАТИЧНЫМ: ни анимации,
+   ни наложения, чтобы не ловить дёрганье. Лежит под содержимым. */
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 62% at 50% -12%,rgba(255,252,244,.55),transparent 62%),
+    radial-gradient(140% 100% at 50% 50%,transparent 55%,rgba(58,48,36,.10) 100%)}
 h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;letter-spacing:-.01em}
 a{color:inherit}
 img{max-width:100%;display:block}
 a,button{-webkit-tap-highlight-color:transparent}
 
 /* мягкое зерно штукатурки — статичное, без наложения на весь экран */
-.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* зерно теперь в самой плите стены — отдельного слоя не нужно */
 
 /* служебная нить слева и счётчик залов */
 .rail{position:fixed;left:0;top:0;bottom:0;width:2px;background:var(--line);z-index:5}
