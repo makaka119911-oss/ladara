@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero-phone.webp" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 
@@ -93,7 +93,9 @@
 
 <!-- КОЛОФОН -->
 <footer class="colophon" id="contact">
-  <div class="colophon__media"><img src="img/outro.jpg" alt="Пустой зал музея с тёплым светом" loading="lazy"></div>
+  <div class="colophon__media"><img src="img/outro.jpg" alt="Пустой зал музея с тёплым светом" loading="lazy">
+    <!-- пыль в свете: та же, что на обложке — вошли в зал и вышли из зала -->
+    <canvas id="colophonDust" aria-hidden="true"></canvas></div>
   <div class="colophon__inner rv">
     <p class="eyebrow" id="outroKicker">Конец экспозиции</p>
     <h2 id="outroTitle">Нужно похожее?</h2>
@@ -136,6 +138,6 @@
 
 <script src="data.js?v=8"></script>
 <script src="script.js?v=11"></script>
-<script src="dust.js?v=2"></script>
+<script src="dust.js?v=3"></script>
 </body>
 </html>
