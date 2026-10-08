@@ -99,7 +99,7 @@
   if (wall) {
     wall.innerHTML = posterItems.map(function (p, i) {
       return '<figure class="poster rv" style="--rv-d:' + ((i % 3) * 70) + 'ms" id="poster-' + i + '">' +
-        '<img src="' + p.art + '" alt="' + p.title + '" loading="lazy">' +
+        '<img src="' + p.art + '" data-big="' + (p.big || '') + '" alt="' + p.title + '" loading="lazy">' +
         '<figcaption class="poster__cap"><b>' + p.title + '</b>' + (p.note || '') + '</figcaption>' +
       '</figure>';
     }).join('');
@@ -295,7 +295,7 @@
   });
   posterItems.forEach(function (p, i) {
     var card = document.getElementById('poster-' + i);
-    if (card) book.push({ el: card, art: p.art, title: p.title,
+    if (card) book.push({ el: card, art: p.art, big: p.big, title: p.title,
                           cap: p.title + (p.note ? ' · ' + p.note : ''), facts: null });
   });
   var zoomable = book;
@@ -345,6 +345,7 @@
   function dist() { var p = pointerList(); return Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y); }
 
   stage.addEventListener('pointerdown', function (e) {
+    if (growing) { growing = false; artBox.style.transition = 'none'; apply(false); }
     pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
     moved = 0; downAt = { x: e.clientX, y: e.clientY, t: Date.now() };
     if (pointerList().length === 1) multi = false;
@@ -440,7 +441,20 @@
   function paint() {
     var item = zoomable[idx];
     if (!item) return;
+    // Сначала показываем лёгкую версию — она уже в кэше, поэтому открытие мгновенное.
+    // Крупную подгружаем и подменяем: пропорции те же, поэтому скачка не видно.
     artBox.innerHTML = '<img src="' + item.art + '" alt="' + item.title + '">';
+    var shown = artBox.querySelector('img');
+    if (item.big) {
+      var bigImg = new Image();
+      bigImg.onload = function () {
+        shown.src = item.big;
+        MAX = zoomLimitFor(bigImg);          // предел зума — по разрешению: где резко, там и предел
+      };
+      bigImg.src = item.big;
+    } else {
+      shown.addEventListener('load', function () { MAX = zoomLimitFor(shown); });
+    }
     artBox.style.transition = 'none';
     resetZoom();
     cap.textContent = item.cap;
@@ -453,18 +467,81 @@
     if (zoomable[idx + 1]) { var im = new Image(); im.src = zoomable[idx + 1].art; }
   }
 
+  /* Предел зума считаем от разрешения картинки, а не одной цифрой на всех.
+     Нужно на весь экран примерно столько точек: ширина сцены × плотность экрана.
+     Разрешаем растянуть не больше чем в 1,25 раза — дальше начинается мыло. */
+  function zoomLimitFor(img) {
+    var nat = (img && img.naturalWidth) || 0;
+    if (!nat) return 3;
+    var dpr = window.devicePixelRatio || 2;
+    var stageW = stage.getBoundingClientRect().width || 1;
+    var lim = nat / (stageW * dpr) * 1.25;
+    return Math.max(1.15, Math.min(6, lim));
+  }
+
+  /* Плавное открытие: картинка вырастает из своего места на стене в центр экрана.
+     Только transform — ни ширины, ни положения в потоке. */
+  var growing = false;
+  function growFrom(fromRect) {
+    if (reduce) return;                       // просили меньше движения — не разворачиваем
+    var img = artBox.querySelector('img');
+    if (!img || !fromRect || !fromRect.width) return;
+    var to = img.getBoundingClientRect();
+    if (!to.width) return;
+    var sx = fromRect.width / to.width;
+    var dx = (fromRect.left + fromRect.width / 2) - (to.left + to.width / 2);
+    var dy = (fromRect.top + fromRect.height / 2) - (to.top + to.height / 2);
+    growing = true;
+    artBox.style.transition = 'none';
+    artBox.style.transform = 'translate3d(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px,0) scale(' + sx.toFixed(3) + ')';
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        artBox.style.transition = 'transform .44s cubic-bezier(.22,1,.36,1)';
+        artBox.style.transform = 'none';
+        growing = false;
+      });
+    });
+  }
+  function shrinkTo(toRect) {
+    if (reduce) return false;
+    var img = artBox.querySelector('img');
+    if (!img || !toRect) return false;
+    var from = img.getBoundingClientRect();
+    if (!from.width) return false;
+    var sx = toRect.width / from.width;
+    var dx = (toRect.left + toRect.width / 2) - (from.left + from.width / 2);
+    var dy = (toRect.top + toRect.height / 2) - (from.top + from.height / 2);
+    artBox.style.transition = 'transform .34s cubic-bezier(.4,0,.6,1)';
+    artBox.style.transform = 'translate3d(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px,0) scale(' + sx.toFixed(3) + ')';
+    return true;
+  }
+
   function open(i) {
     if (!zoomable.length) return;
+    var from = null;
+    var next = zoomable[Math.max(0, Math.min(zoomable.length - 1, i))];
+    if (next && next.el && next.el.getBoundingClientRect) from = next.el.getBoundingClientRect();
     idx = Math.max(0, Math.min(zoomable.length - 1, i));
     paint();
     viewer.hidden = false;
-    requestAnimationFrame(function () { viewer.classList.add('is-open'); });
+    requestAnimationFrame(function () {
+      viewer.classList.add('is-open');
+      growFrom(from);
+    });
     document.body.style.overflow = 'hidden';
   }
   function close() {
+    var back = null;
+    var item = zoomable[idx];
+    if (item && item.el && item.el.getBoundingClientRect) back = item.el.getBoundingClientRect();
     resetZoom();
-    viewer.classList.remove('is-open');
-    setTimeout(function () { viewer.hidden = true; }, 320);
+    if (shrinkTo(back)) {
+      viewer.classList.remove('is-open');
+      setTimeout(function () { viewer.hidden = true; artBox.style.transition = 'none'; artBox.style.transform = 'none'; }, 340);
+    } else {
+      viewer.classList.remove('is-open');
+      setTimeout(function () { viewer.hidden = true; }, 320);
+    }
     document.body.style.overflow = '';
   }
 

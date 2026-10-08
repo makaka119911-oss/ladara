@@ -54,15 +54,20 @@ window.MUSEUM = {
     title: 'Афиши',
     lead: 'Плакаты для событий — ретриты, медитации, женские круги. Композиция и свет — вместе с ИИ-генератором, текст всегда набран настоящими шрифтами.',
     items: [
-      { art: 'img/posters/zamedlitsya.jpg',   title: 'Время замедлиться',      note: 'медитация в замке · 11 октября 2026' },
-      { art: 'img/posters/zhenskiy-krug.jpg', title: 'Женский круг',           note: '17 октября 2026 · Немчиновка' },
-      { art: 'img/posters/doverie.jpg',       title: 'Открытие доверия',       note: '31 октября 2026 · замок в Немчиновке' },
-      { art: 'img/posters/misteriya.jpg',     title: 'Мистерия чувственности', note: '24 октября 2026 · пять ключей' },
-      { art: 'img/posters/naydi-sebya.jpg',   title: 'Найди в себе себя',      note: 'ретрит · 17 октября 2026' },
-      { art: 'img/posters/barbekyu.jpg',      title: 'Замок Барбекю',          note: 'вечер королев · 4 октября' },
-      { art: 'img/posters/awakening.jpg',     title: 'Awakening Desire',       note: 'Level Two · 31 October 2026' },
-      { art: 'img/posters/klyuchi.jpg',       title: 'Ключи от Зачарованного замка', note: 'три двери · 4 июля 2026' },
-      { art: 'img/posters/bogini.jpg',        title: 'Богини Никифоровки',     note: 'открытая фотосессия · июль 2026' }
+      /* Порядок — от ближайшего события к прошедшим: у стены афиш первым идёт то, куда ещё можно успеть.
+         art — лёгкая версия для стены, big — крупная, её показываем только при открытии. */
+      { art: 'img/posters/vremya-zamedlitsya.webp',           big: 'img/posters/big/vremya-zamedlitsya.webp',           title: 'Время замедлиться',            note: 'медитация в замке · 11 октября 2026' },
+      { art: 'img/posters/naydi-v-sebe-sebya.webp',           big: 'img/posters/big/naydi-v-sebe-sebya.webp',           title: 'Найди в себе себя',            note: 'ретрит · 17 октября 2026 · Немчиновка' },
+      { art: 'img/posters/zamok-barbekyu-25-oktyabrya.webp',  big: 'img/posters/big/zamok-barbekyu-25-oktyabrya.webp',  title: 'Замок Барбекю',                note: 'вечер королев · 25 октября' },
+      { art: 'img/posters/otkrytie-doveriya.webp',            big: 'img/posters/big/otkrytie-doveriya.webp',            title: 'Открытие доверия',             note: 'замок в Немчиновке · 31 октября 2026' },
+      { art: 'img/posters/pogruzhenie-v-seksualnost-2.webp',  big: 'img/posters/big/pogruzhenie-v-seksualnost-2.webp',  title: 'Погружение в сексуальность',   note: 'уровень 2 · 31 октября' },
+      { art: 'img/posters/zamok-barbekyu-4-oktyabrya.webp',   big: 'img/posters/big/zamok-barbekyu-4-oktyabrya.webp',   title: 'Замок Барбекю',                note: 'вечер королев · 4 октября' },
+      { art: 'img/posters/klyuchi-4-iyulya.webp',             big: 'img/posters/big/klyuchi-4-iyulya.webp',             title: 'Ключи от Зачарованного замка', note: 'три двери · 4 июля 2026' },
+      { art: 'img/posters/bogini-nikiforovki.webp',           big: 'img/posters/big/bogini-nikiforovki.webp',           title: 'Богини Никифоровки',           note: 'открытая фотосессия · июль 2026' },
+      { art: 'img/posters/fotosessiya-v-nikiforovke.webp',    big: 'img/posters/big/fotosessiya-v-nikiforovke.webp',    title: 'Фотосессия в Никифоровке',     note: 'коллекция макраме · июль' },
+      { art: 'img/posters/ognennyy-massazh.webp',             big: 'img/posters/big/ognennyy-massazh.webp',             title: 'Огненный массаж',              note: 'церемония с поющими чашами · Реутово' },
+      { art: 'img/posters/chto-tebya-zhdet.webp',             big: 'img/posters/big/chto-tebya-zhdet.webp',             title: 'Что тебя ждёт',                note: 'массаж и уход · Реутов и Немчиновка' },
+      { art: 'img/posters/misteriya-chuvstvennosti.webp',     big: 'img/posters/big/misteriya-chuvstvennosti.webp',     title: 'Мистерия чувственности',       note: 'частный замок · 29 марта' }
     ]
   },
   /* --- ЗАЛЫ. Акцент у каждого — из палитры самого проекта ---
