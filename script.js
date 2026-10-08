@@ -105,6 +105,16 @@
     }).join('');
   }
 
+  /* Карточка-буклет: не афиша события, а перечень услуг — стоит отдельно под стеной. */
+  var leafBox = document.getElementById('posterLeaflet');
+  var leaf = P.leaflet;
+  if (leafBox && leaf && leaf.art) {
+    leafBox.innerHTML = '<figure class="leaflet rv" id="leaflet">' +
+      '<img src="' + leaf.art + '" data-big="' + (leaf.big || '') + '" alt="' + leaf.title + '" loading="lazy">' +
+      '<figcaption class="poster__cap"><b>' + leaf.title + '</b>' + (leaf.note || '') + '</figcaption>' +
+    '</figure>';
+  }
+
   var halls = [].slice.call(document.querySelectorAll('.spread'));
   var about = document.getElementById('about');
   var colophon = document.getElementById('contact');
@@ -298,6 +308,14 @@
     if (card) book.push({ el: card, art: p.art, big: p.big, title: p.title,
                           cap: p.title + (p.note ? ' · ' + p.note : ''), facts: null });
   });
+  // буклет листается сразу после афиш — он логично закрывает «Кабинет гравюр»
+  (function () {
+    var el = document.getElementById('leaflet');
+    if (el && leaf && leaf.art) {
+      book.push({ el: el, art: leaf.art, big: leaf.big, title: leaf.title,
+                  cap: leaf.title + (leaf.note ? ' · ' + leaf.note : ''), facts: null });
+    }
+  })();
   var zoomable = book;
 
   var idx = 0, scale = 1, tx = 0, ty = 0, MIN = 1, MAX = 6;

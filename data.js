@@ -66,9 +66,15 @@ window.MUSEUM = {
       { art: 'img/posters/bogini-nikiforovki.webp',           big: 'img/posters/big/bogini-nikiforovki.webp',           title: 'Богини Никифоровки',           note: 'открытая фотосессия · июль 2026' },
       { art: 'img/posters/fotosessiya-v-nikiforovke.webp',    big: 'img/posters/big/fotosessiya-v-nikiforovke.webp',    title: 'Фотосессия в Никифоровке',     note: 'коллекция макраме · июль' },
       { art: 'img/posters/ognennyy-massazh.webp',             big: 'img/posters/big/ognennyy-massazh.webp',             title: 'Огненный массаж',              note: 'церемония с поющими чашами · Реутово' },
-      { art: 'img/posters/chto-tebya-zhdet.webp',             big: 'img/posters/big/chto-tebya-zhdet.webp',             title: 'Что тебя ждёт',                note: 'массаж и уход · Реутов и Немчиновка' },
       { art: 'img/posters/misteriya-chuvstvennosti.webp',     big: 'img/posters/big/misteriya-chuvstvennosti.webp',     title: 'Мистерия чувственности',       note: 'частный замок · 29 марта' }
-    ]
+    ],
+    /* Не афиша события, а перечень услуг — поэтому не в стене, а карточкой под ней. */
+    leaflet: {
+      art: 'img/posters/chto-tebya-zhdet.webp',
+      big: 'img/posters/big/chto-tebya-zhdet.webp',
+      title: 'Буклет',
+      note: 'что входит в процедуры · массаж, масла, чаши · Реутов и Немчиновка'
+    }
   },
   /* --- ЗАЛЫ. Акцент у каждого — из палитры самого проекта ---
      art    — что висит в зале (атмосфера зала)

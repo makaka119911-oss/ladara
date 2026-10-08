@@ -282,6 +282,10 @@ body.show-plan .plan{display:flex}
   border:var(--fr) solid transparent;
   border-image:url('img/baget.webp?v=2') 36 / var(--fr) repeat;
   box-shadow:0 30px 70px -40px rgba(0,0,0,.9)}
+/* Буклет под стеной афиш: широкая карточка, чтобы не путалась с афишами событий */
+.leaflet{margin:var(--s6) auto 0;max-width:760px;display:block;cursor:zoom-in}
+.leaflet img{width:100%;border-radius:2px;box-shadow:0 30px 70px -40px rgba(0,0,0,.9),0 0 0 1px rgba(246,242,234,.08)}
+.leaflet:hover img{box-shadow:0 44px 90px -40px #000,0 0 0 1px rgba(201,161,94,.45)}
 .poster__cap{margin-top:var(--s2);font-size:var(--t2);color:var(--dim)}
 .poster__cap b{display:block;font-family:var(--serif);font-weight:400;font-size:var(--t3);color:var(--ink)}
 .poster:hover img{box-shadow:0 44px 90px -40px #000,0 0 70px -30px rgba(201,161,94,.55)}
