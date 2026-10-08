@@ -54,13 +54,19 @@ p{margin:0}
 /* ---------- служебное ---------- */
 .brand{position:fixed;top:calc(var(--s3) + env(safe-area-inset-top,0px));left:var(--pad);z-index:8;text-decoration:none;
   font:500 var(--t1)/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;
-  color:var(--ink);transition:color .5s var(--ease)}
+  color:var(--ink);transition:color .5s var(--ease),opacity .45s var(--ease)}
 .rail{position:fixed;left:0;top:0;bottom:0;width:2px;background:var(--line);z-index:7}
 .rail i{display:block;width:100%;height:100%;background:var(--bronze);
   transform:scaleY(0);transform-origin:top;transition:transform .35s linear;will-change:transform}
 .counter{position:fixed;top:calc(var(--s3) + env(safe-area-inset-top,0px));right:var(--pad);z-index:8;text-align:right;
-  font-size:var(--t1);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+  font-size:var(--t1);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  transition:opacity .45s var(--ease)}
 .counter b{display:block;font-weight:500;color:var(--ink)}
+
+/* Обложка — не зал: счётчик «ОБЛОЖКА ИЗ 3» там не нужен, а бренд, пока страница не сдвинулась,
+   иначе ложится на строку «Галерея работ». В залах и то и другое на месте. */
+body.on-cover .counter{opacity:0;pointer-events:none}
+body.on-cover:not(.at-top) .brand{opacity:0;pointer-events:none}
 
 .plan{position:fixed;left:50%;bottom:var(--s2);transform:translateX(-50%);z-index:8;
   display:none;align-items:center;gap:var(--s1);padding:var(--s1);border-radius:999px;
@@ -109,6 +115,20 @@ body.show-plan .plan{display:flex}
 .index__l{display:block;color:var(--on-dark-dim);font-size:var(--t2);margin-top:var(--s1)}
 /* на телефоне перечень должен помещаться в экран — подписи прячем, остаётся номер и название */
 @media (max-width:767px){ .index__l{display:none} .index a{padding:var(--s3) 0} }
+
+/* Короткие экраны. По нашему же правилу «работы видно сразу, без прокрутки» обложка обязана
+   влезать целиком: на окне 360×700 она выходила 824 px, и последний пункт списка уходил
+   на 76 px под срез. Сжимаем вертикальный ритм — только шагами шкалы, только на низких окнах.
+   На высоких экранах не меняется ничего. */
+@media (max-height:800px){
+  .cover__inner{padding-top:var(--s6);padding-bottom:var(--s4);gap:var(--s4)}
+  .index a{padding:var(--s2) 0}
+}
+@media (max-height:680px){
+  .cover__inner{padding-top:var(--s4);gap:var(--s3)}
+  .cover__offer{font-size:var(--t3)}
+  .index a{padding:var(--s1) 0}
+}
 
 /* кнопка — типографская */
 .cta{display:inline-block;text-decoration:none;font:500 var(--t1)/1 var(--sans);

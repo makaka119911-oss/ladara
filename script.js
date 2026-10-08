@@ -267,8 +267,14 @@
 
     if (numEl && numEl.textContent !== label) numEl.textContent = label;
 
+    /* На обложке фиксированные бренд и счётчик мешают: бренд ложится на строку «Галерея работ»,
+       как только начинаешь листать, а счётчик «ОБЛОЖКА ИЗ 3» там просто не нужен — обложка не зал.
+       Поэтому: счётчик на обложке скрыт совсем, бренд — пока страница не сдвинулась. */
+    document.body.classList.toggle('at-top', scrollY < 24);
+
     if (state !== lastState) {
       lastState = state;
+      document.body.classList.toggle('on-cover', state === 'cover');
       document.body.classList.toggle('on-wall', state === 'wall' || state === 'hall');
       document.body.classList.toggle('show-plan', state === 'hall');
       document.body.classList.toggle('is-lit', state === 'hall');
