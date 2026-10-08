@@ -154,11 +154,30 @@ body.show-plan .plan{display:flex}
   box-shadow:0 60px 120px -50px rgba(0,0,0,.95), 0 0 0 1px rgba(246,242,234,.10),
              0 0 90px -30px rgba(201,161,94,.25)}
 @media (max-width:767px){ .plate img{aspect-ratio:4/5} }
-.plate__zoom{position:absolute;right:var(--s3);bottom:var(--s3);
+.plate__zoom{position:absolute;z-index:1;right:var(--s3);bottom:var(--s3);   /* выше слоя стекла */
   border:1px solid rgba(255,255,255,.4);background:rgba(21,18,15,.5);color:#fff;
   font:500 var(--t1)/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;
   padding:var(--s2) var(--s3);border-radius:999px;cursor:pointer;
   opacity:0;transform:translateY(var(--s1));transition:opacity .4s var(--ease),transform .4s var(--ease)}
+/* Стекло витрины на карточке работы. Слой лежит над картинкой, но ниже кнопки «Рассмотреть»
+   и не ловит касания (pointer-events:none), поэтому нажатия и зум работают как работали.
+   Блик статичный: у настоящего стекла отражение привязано к свету в зале, а не к листу.
+
+   Почему со СТРУКТУРОЙ, а не ровной засветкой: ровный блик поднимал угол всего на +8 из 255,
+   и доля кадра с подъёмом выше 15 составляла 0,6 % — глазом это не читалось вовсе (проверяли
+   на живом). Узкая мягкая полоса — отражение окна — даёт 11,7 % при максимуме +94 и при этом
+   НЕ съедает контраст самой работы. В просмотре (#viewer) стекла нет намеренно: там работу
+   рассматривают вплотную, и блик мешал бы читать. */
+.plate::after{content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.20) 0,rgba(255,255,255,.20) 1px,rgba(255,255,255,0) 1px),
+    linear-gradient(112deg,
+      rgba(255,255,255,0) 16%,
+      rgba(255,255,255,.06) 24%,
+      rgba(255,255,255,.34) 27%,
+      rgba(255,255,255,.34) 30.5%,
+      rgba(255,255,255,.06) 34%,
+      rgba(255,255,255,0) 44%)}
 .plate:hover .plate__zoom,.plate:focus-within .plate__zoom{opacity:1;transform:none}
 @media (hover:none){ .plate__zoom{opacity:1;transform:none} }
 
