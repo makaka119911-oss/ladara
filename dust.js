@@ -23,7 +23,8 @@
   var E = (window.MUSEUM && window.MUSEUM.effects) || {};
   if (E.dust === false) { cv.style.display = 'none'; return; }
 
-  var COUNT = Math.max(1, Math.min(3200, E.count || 1200));
+  var MAX_COUNT = 3200;                       /* запас: столько мошек можем нарисовать */
+  var COUNT = Math.max(1, Math.min(MAX_COUNT, E.count || 1200));
   var SIZE = E.size || 1.0;
   var POWER = E.strength || 1.2;
   var RES = E.res || 0.5;
@@ -124,9 +125,9 @@
     };
   }
   var R = rnd(20261008);
-  var uv = new Float32Array(COUNT * 2), phase = new Float32Array(COUNT),
-      scale = new Float32Array(COUNT), seedA = new Float32Array(COUNT);
-  for (var i = 0; i < COUNT; i++) {
+  var uv = new Float32Array(MAX_COUNT * 2), phase = new Float32Array(MAX_COUNT),
+      scale = new Float32Array(MAX_COUNT), seedA = new Float32Array(MAX_COUNT);
+  for (var i = 0; i < MAX_COUNT; i++) {
     uv[i * 2] = R(); uv[i * 2 + 1] = R();
     phase[i] = R();
     scale[i] = 1.0 + Math.pow(R(), 2) * 2.5;
@@ -213,6 +214,12 @@
 
   cv.style.opacity = 1;
   if (dbg) {
+    /* служебное: перебор настроек без правки data.js — только в режиме показаний */
+    window.__dustSet = function (o) {
+      if (o.count) COUNT = Math.max(1, Math.min(MAX_COUNT, o.count));
+      if (o.size) SIZE = o.size;
+      if (o.power) POWER = o.power;
+    };
     window.__dustFrame = function (t) { draw(t); };
     window.__dustSum = function () {
       var p = new Uint8Array(cv.width * cv.height * 4);
