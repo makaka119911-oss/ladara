@@ -16,6 +16,7 @@
 
   /* тёмный зал: стена сгенерирована и выровнена, средняя яркость 41 */
   --wall:#2a2420;
+  --wall-tone:#392e25;        /* средний тон текстуры стены: сюда гасим края полотен на стыках секций */
   --ink:#f2ece2;              /* 12.7:1 на стене */
   --dim:rgba(246,242,234,.7); /* 6.3:1 */
   --line:rgba(246,242,234,.16);
@@ -208,6 +209,14 @@ body.show-plan .plan{display:flex}
 /* ---------- колофон ---------- */
 .colophon{position:relative;z-index:1;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
 .colophon__media{position:absolute;inset:0;z-index:0}
+/* Стыки секций. Полотно во всю ширину обрывалось линией: замер на живом телефоне — ступень
+   11 из 255 на выходе обложки и 35 на входе колофона (после новой, более светлой стены это
+   стало заметно). Гасим краевые полосы полотна в тон стены — залы переходят один в другой,
+   а не «режутся». Градиент лежит в медиа-слое, поэтому текста не касается. */
+.colophon__media::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,var(--wall-tone) 0%,rgba(57,46,37,0) 15%)}
+.cover__media::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,var(--wall-tone) 0%,rgba(57,46,37,0) 13%)}
 .colophon__media img{width:100%;height:100%;object-fit:cover}
 .colophon::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(to top,rgba(42,36,32,.3) 0%,rgba(38,32,28,.66) 40%,rgba(30,25,22,.4) 74%,rgba(42,36,32,0) 100%)}
