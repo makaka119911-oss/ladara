@@ -23,9 +23,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="img/hero-phone.jpg" media="(max-width:767px)">
-<link rel="preload" as="image" href="img/hero-desk.jpg" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="preload" as="image" href="img/hero-phone.webp" media="(max-width:767px)">
+<link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
+<link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 
@@ -38,9 +38,11 @@
 <header class="cover" id="top">
   <div class="cover__media">
     <picture>
-      <source media="(min-width:768px)" srcset="img/hero-desk.jpg">
-      <img src="img/hero-phone.jpg" alt="Тёмный зал музея: человек смотрит на светящееся полотно" fetchpriority="high">
+      <source media="(min-width:768px)" srcset="img/hero-desk.webp">
+      <img src="img/hero-phone.webp" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
     </picture>
+    <!-- пыль в свете зала: рисуется из data.js (блок effects), без неё страница выглядит как раньше -->
+    <canvas id="coverDust" aria-hidden="true"></canvas>
   </div>
   <div class="cover__inner">
     <div class="cover__lead">
@@ -134,5 +136,6 @@
 
 <script src="data.js?v=7"></script>
 <script src="script.js?v=11"></script>
+<script src="dust.js?v=1"></script>
 </body>
 </html>
