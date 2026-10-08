@@ -14,8 +14,9 @@ window.MUSEUM = {
     title: 'Сайты, приложения,\nботы',
     offer: 'Собираю цифровые вещи: сайты, приложения, ботов. Вручную, без конструкторов.',
     cta: 'Войти в галерею',
-    image: 'img/hero-phone.jpg',     // телефон
-    imageDesk: 'img/hero-desk.jpg'   // десктоп
+    /* обложку грузит разметка (<picture> в index.html) — эти поля для справки, код их не читает */
+    image: 'img/hero-phone.webp',   // телефон
+    imageDesk: 'img/hero-desk.webp' // десктоп
   },
 
   /* --- ОБ АВТОРЕ --- */
