@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero-phone.webp?v=2" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 
@@ -42,12 +42,17 @@
 <!-- ОБЛОЖКА -->
 <header class="cover" id="top">
   <div class="cover__media">
-    <picture>
-      <source media="(min-width:768px)" srcset="img/hero-desk.webp">
-      <img src="img/hero-phone.webp?v=2" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
-    </picture>
-    <!-- пыль в свете зала: рисуется из data.js (блок effects), без неё страница выглядит как раньше -->
-    <canvas id="coverDust" aria-hidden="true"></canvas>
+    <!-- Слой дыхания: фотография и пыль вместе очень медленно приближаются и отходят.
+         Обёртка нужна, чтобы не трогать transform самой картинки (там параллакс) и не сдвигать
+         ::after медиа-слоя — им гасится край в тон стены, и его сдвиг обнажил бы полосу на стыке. -->
+    <div class="cover__drift">
+      <picture>
+        <source media="(min-width:768px)" srcset="img/hero-desk.webp">
+        <img src="img/hero-phone.webp?v=2" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
+      </picture>
+      <!-- пыль в свете зала: рисуется из data.js (блок effects), без неё страница выглядит как раньше -->
+      <canvas id="coverDust" aria-hidden="true"></canvas>
+    </div>
   </div>
   <div class="cover__inner">
     <div class="cover__lead">
@@ -153,8 +158,8 @@
   <button class="scheme__close" id="schemeClose" aria-label="Закрыть чертёж">✕</button>
 </div>
 
-<script src="data.js?v=16"></script>
-<script src="script.js?v=36"></script>
+<script src="data.js?v=17"></script>
+<script src="script.js?v=37"></script>
 <script src="dust.js?v=3"></script>
 </body>
 </html>
