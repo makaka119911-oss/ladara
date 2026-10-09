@@ -309,8 +309,11 @@
        срезает мёртвая зона. Нет гироскопа — остаётся касание (свет ведёт к точке).
        iOS события не отдаёт без разрешения по жесту, там наклон просто не включится. */
     var TOUCH = matchMedia('(max-width:767px)').matches || matchMedia('(hover:none)').matches;
-    if (TOUCH && typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission !== 'function') {
+    // ВАЖНО: наличие DeviceOrientationEvent.requestPermission НЕ признак «нужно разрешение» —
+    // в Chrome он есть всегда, и первая версия блока из-за этого молча не включалась (проверено
+    // на живом: requestPermission — function, события не слушались). Поэтому просто слушаем:
+    // где сенсор закрыт (iOS без разрешения) — событий не будет, и наклон тихо не включится.
+    if (TOUCH && typeof DeviceOrientationEvent !== 'undefined') {
       var bx = null, by = null, DEAD = .08, FULL = 20;
       addEventListener('deviceorientation', function (e) {
         if (e.gamma == null || e.beta == null) return;
