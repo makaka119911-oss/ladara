@@ -39,7 +39,8 @@
   var tg = document.getElementById('contactTg');
   if (tg && M.contact) tg.href = M.contact.telegram;
   txt('colophonYear', String(new Date().getFullYear()));
-  txt('colophonCount', works.length ? works.length + ' / ' + works.length : '');
+  var realWorks = works.filter(function (w) { return !w.invite; });
+  txt('colophonCount', realWorks.length ? realWorks.length + ' / ' + realWorks.length : '');
 
   /* ---------- перечень работ на обложке ---------- */
   var coverIndex = document.getElementById('coverIndex');
@@ -62,7 +63,13 @@
     sec.setAttribute('data-hall', w.hall || String(i + 1));
 
     var plate;
-    if (w.stub || !w.art) {
+    if (w.invite) {
+      /* Зал-приглашение: вместо картины пустая рама того же багета, что у работ. Внутри не текст,
+         а стена — мягкое светлое пятно и тень от снятого холста, поэтому место читается свободным,
+         а не «картинка не загрузилась». Подпись под рамой — маленькая, вразрядку. */
+      plate = '<div class="plate plate--empty rv" style="--rv-d:0ms">' +
+              '<span class="plate__note">здесь будет ваша работа</span></div>';
+    } else if (w.stub || !w.art) {
       plate = '<div class="stub rv" style="--rv-d:0ms"><span class="stub__num">' + (w.num || '') + '</span>' +
               '<span class="stub__note">экспонат готовится</span></div>';
     } else {
