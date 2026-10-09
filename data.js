@@ -185,6 +185,115 @@ window.MUSEUM = {
     */
   ],
 
+  /* --- ENGLISH ------------------------------------------------------------------
+     Всё, что переводится, лежит здесь: словарь интерфейса (ui) и тексты тех же разделов.
+     Русский остаётся основным: если языка нет или в переводе чего-то не хватает, показываем
+     русское. Массивы (works, posters.items, leaflet) сливаются ПО ПОРЯДКУ — порядок в обоих
+     языках должен совпадать. Картинки, адреса, ссылки и числа здесь не повторяются — они общие. */
+  en: {
+    ui: {
+      brand: 'studio',
+      cap: 'Exhibition',            /* ЭКСПОЗИЦИЯ на обложке */
+      hall: 'Hall',                 /* «Зал» в счётчике и табличках */
+      of: 'of',                     /* «из 4» */
+      cover: 'Cover',
+      about: 'About',
+      end: 'Colophon',
+      planLabel: 'Halls',
+      planAria: 'Plan of the halls',
+      factsWhat: 'What it is',
+      factsMade: 'Made with',
+      factsState: 'State',
+      zoom: 'Take a closer look',
+      emptyPlate: 'your work will hang here',
+      stub: 'exhibit in preparation',
+      open: 'Open',
+      scheme: 'How it is built',
+      schemeCcap: 'how it is built',
+      schemeTab: 'Open in a new tab',
+      flipBack: 'Reverse side',
+      flipFront: 'Front side',
+      hintCoarse: 'Tap to zoom · two fingers to move · tap again to reset',
+      hintFine: 'Click to zoom · wheel to move · Esc to close',
+      close: 'Close',
+      prev: 'Previous',
+      next: 'Next',
+      noscript: 'Exhibits: Seven Crafts · Sexology and Psychology · Women’s World · Your project',
+      title: 'LADARA — websites, apps and bots',
+      description: 'I build websites, apps and chat bots myself, without site builders. The works can be examined up close — like in a museum.'
+    },
+    hero: {
+      kicker: 'Selected work',
+      title: 'Websites, apps, \nbots',
+      offer: 'I build digital things: websites, apps and bots. By hand, without site builders.',
+      cta: 'Enter the gallery'
+    },
+    author: {
+      kicker: 'The keeper',
+      title: 'About the maker',
+      photoAlt: 'Portrait of the maker',
+      text: [
+        'I build websites, apps and bots. I work with Cursor and AI agents: they take the routine, the decisions stay with me.',
+        'I hand-code everything, without site builders — the code stays under control. What matters to me is that the thing works quietly, precisely and for a long time.'
+      ]
+    },
+    outro: {
+      kicker: 'End of the exhibition',
+      title: 'Need something like this?',
+      text: 'Tell me the task — I will build it the same way: from an idea to a live address. A website, an app, a bot, a landing page for a launch.',
+      note: 'The exhibits are live: the links on the labels lead to real projects.'
+    },
+    posters: {
+      kicker: 'Print room',
+      title: 'Posters',
+      lead: 'Posters for events — retreats, meditations, women’s circles. Composition and light — together with an AI generator, the type always set in real fonts.',
+      items: [
+        { title: 'Time to slow down',            note: 'meditation in a castle · 11 October 2026' },
+        { title: 'Find yourself within',         note: 'retreat · 17 October 2026 · Nemchinovka' },
+        { title: 'Castle Barbecue',              note: 'queens’ evening · 25 October' },
+        { title: 'Opening of trust',             note: 'castle in Nemchinovka · 31 October 2026' },
+        { title: 'Diving into sensuality',       note: 'level 2 · 31 October' },
+        { title: 'Castle Barbecue',              note: 'queens’ evening · 4 October' },
+        { title: 'Keys to the Enchanted Castle', note: 'three doors · 4 July 2026' },
+        { title: 'Goddesses of Nikiforovka',     note: 'open photo session · July 2026' },
+        { title: 'Photo session in Nikiforovka', note: 'macramé collection · July' },
+        { title: 'Fire massage',                 note: 'ceremony with singing bowls · Reutov' },
+        { title: 'Mystery of sensuality',        note: 'private castle · 29 March' }
+      ],
+      leaflet: [
+        { title: 'Fire ceremony', note: 'flyer, two sides · fire massage · Reutov' },
+        { title: 'Booklet',       note: 'what the treatments include · massage, oils, bowls · Reutov and Nemchinovka' }
+      ]
+    },
+    works: [
+      {
+        title: 'Seven Crafts',
+        line: 'A landing page for handcraft video courses: seven crafts, shown calmly and to the point.',
+        facts: { what: 'a landing page for handcraft video courses', made: 'HTML, CSS, JavaScript — a static site', state: 'live' },
+        urlLabel: 'Open the site'
+      },
+      {
+        title: 'Sexology and Psychology',
+        line: 'A sex-therapy site for women: areas of work, a poster of meetings, booking.',
+        facts: { what: 'a sex-therapy site for women', made: 'HTML, CSS, JavaScript; content from JSON', state: 'live' },
+        urlLabel: 'Open the site'
+      },
+      {
+        title: 'Women’s World',
+        line: 'An app for women: cycle, diary, circle, calls and an assistant — all in one place.',
+        facts: { what: 'an app for women (PWA), closed beta', made: 'React, Node.js, PostgreSQL, Redis, Docker', state: 'live' },
+        urlLabel: 'Open the app',
+        scheme: 'schemes/zhenskiy-mir-en.html'
+      },
+      {
+        title: 'Your project',
+        line: 'A website, an app or a bot. This frame is empty for now — your work will hang here.',
+        facts: { what: 'a website, an app, a bot — whatever you need', made: 'by hand, from an idea to a live address', state: 'space available' },
+        urlLabel: 'Discuss a project'
+      }
+    ]
+  },
+
   /* --- ЭФФЕКТЫ ЗАЛА ---
      Пыль в свете на обложке. Рисуется на канвасе поверх фотографии зала; на телефоне
      это стоит почти ничего (замер: 59,5 к/с, кадров длиннее 33 мс — 0,3 %).
