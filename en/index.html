@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="../">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#15120f">
+<title>LADARA — websites, apps and bots</title>
+<meta name="description" content="Work by studio LADARA: websites, apps and bots. Live exhibits — Seven Crafts, Sexology and Psychology, Women’s World.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LADARA">
+<meta property="og:title" content="LADARA — websites, apps and bots">
+<meta property="og:description" content="I build websites, apps and chat bots myself, without site builders. The works can be examined up close — like in a museum.">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://makaka119911-oss.github.io/ladara/en/">
+<meta property="og:image" content="https://makaka119911-oss.github.io/ladara/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LADARA — websites, apps and bots">
+<meta name="twitter:description" content="I build websites, apps and chat bots myself, without site builders. The works can be examined up close — like in a museum.">
+<meta name="twitter:image" content="https://makaka119911-oss.github.io/ladara/img/og-card.jpg">
+<meta property="og:image:alt" content="A dark museum hall: a person in front of a large painting in a golden frame, warm candle light">
+<link rel="canonical" href="https://makaka119911-oss.github.io/ladara/en/">
+<link rel="alternate" hreflang="ru" href="https://makaka119911-oss.github.io/ladara/">
+<link rel="alternate" hreflang="en" href="https://makaka119911-oss.github.io/ladara/en/">
+<link rel="alternate" hreflang="x-default" href="https://makaka119911-oss.github.io/ladara/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero-phone.webp?v=2" media="(max-width:767px)">
+<link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
+<link rel="stylesheet" href="style.css?v=36">
+</head>
+<body>
+
+<a class="brand" href="#top"><span>студия</span>LADARA</a>
+<!-- Переключатель языка: русский основной, английский — тем же адресом с ?lang=en.
+     Оформлен как подпись студии (вразрядку, мелкими), текущий язык подсвечен бронзой. -->
+<nav class="lang" id="lang" aria-label="Язык">
+  <a href="?lang=ru" data-lang="ru">RU</a><span aria-hidden="true">·</span><a href="?lang=en" data-lang="en">EN</a>
+</nav>
+<div class="rail" aria-hidden="true"><i id="railFill"></i></div>
+<div class="counter"><b id="hallNum">Обложка</b><span id="hallTotal"></span></div>
+<nav class="plan" id="plan" aria-label="План залов"></nav>
+
+<!-- ОБЛОЖКА -->
+<header class="cover" id="top">
+  <div class="cover__media">
+    <picture>
+      <source media="(min-width:768px)" srcset="img/hero-desk.webp">
+      <img src="img/hero-phone.webp?v=2" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
+    </picture>
+    <!-- пыль в свете зала: рисуется из data.js (блок effects), без неё страница выглядит как раньше -->
+    <canvas id="coverDust" aria-hidden="true"></canvas>
+  </div>
+  <div class="cover__inner">
+    <div class="cover__lead">
+      <p class="eyebrow" id="coverKicker">Каталог работ</p>
+      <h1 id="coverTitle">Сайты, приложения,<br>боты</h1>
+      <p class="cover__offer" id="coverOffer"></p>
+      <a class="cta" href="#exp" id="coverCta">Смотреть экспозицию</a>
+    </div>
+    <!-- перечень работ: виден сразу, без прокрутки -->
+    <nav class="index" id="coverIndex" aria-label="Работы"></nav>
+  </div>
+</header>
+
+<!-- РАЗВОРОТЫ: рисуются из data.js -->
+<main id="spreads"></main>
+
+<noscript>
+  <section class="spread"><p class="label__title">Экспонаты: Семь ремёсел · Сексология и психология · Женский мир</p></section>
+</noscript>
+
+<!-- ПЕЧАТНЫЕ РАБОТЫ -->
+<section class="posters" id="posters">
+  <div class="posters__inner">
+    <p class="eyebrow rv" id="postersKicker" style="--rv-d:0ms"></p>
+    <h2 class="rv" id="postersTitle" style="--rv-d:60ms"></h2>
+    <p class="posters__lead rv" id="postersLead" style="--rv-d:120ms"></p>
+    <div class="posters__wall" id="postersWall"></div>
+    <div id="posterLeaflet"></div>
+  </div>
+</section>
+
+<!-- МАСТЕР -->
+<section class="about" id="about">
+  <div class="about__inner">
+    <figure class="about__photo rv" style="--rv-d:0ms">
+      <img id="authorPhoto" src="img/autor.webp?v=2" alt="Портрет автора" loading="lazy">
+    </figure>
+    <div class="about__text rv" style="--rv-d:120ms">
+      <p class="eyebrow" id="aboutKicker">Смотритель</p>
+      <h2 id="aboutTitle">Об авторе</h2>
+      <div id="aboutBody"></div>
+      <figure class="about__workshop rv" style="--rv-d:200ms">
+        <img id="authorWorkshop" src="img/about-workshop.webp?v=2" alt="Рабочий стол в мастерской" loading="lazy">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- КОЛОФОН -->
+<footer class="colophon" id="contact">
+  <div class="colophon__media"><img src="img/outro.jpg" alt="Пустой зал музея с тёплым светом" loading="lazy">
+    <!-- пыль в свете: та же, что на обложке — вошли в зал и вышли из зала -->
+    <canvas id="colophonDust" aria-hidden="true"></canvas></div>
+  <div class="colophon__inner rv">
+    <p class="eyebrow" id="outroKicker">Конец экспозиции</p>
+    <h2 id="outroTitle">Нужно похожее?</h2>
+    <p class="colophon__lead" id="outroText"></p>
+
+    <div class="colophon__cols rv" style="--rv-d:160ms">
+      <div>
+        <p class="colophon__k">Связаться</p>
+        <p><a class="cta" href="https://t.me/LADAR888" target="_blank" rel="noopener" id="contactTg">@LADAR888</a></p>
+        <p><a class="cta" href="mailto:makaka119911@gmail.com" id="contactMail">makaka119911@gmail.com</a></p>
+      </div>
+      <div>
+        <p class="colophon__k">Студия</p>
+        <p class="colophon__v">LADARA</p>
+        <p class="colophon__v" id="colophonYear"></p>
+      </div>
+      <div>
+        <p class="colophon__k">Экспонатов</p>
+        <p class="colophon__v" id="colophonCount"></p>
+      </div>
+    </div>
+    <p class="colophon__note" id="outroNote"></p>
+  </div>
+</footer>
+
+<!-- РАССМАТРИВАНИЕ -->
+<div class="viewer" id="viewer" hidden>
+  <button class="viewer__close" id="viewerClose" aria-label="Закрыть">✕</button>
+  <button class="viewer__nav viewer__nav--prev" id="viewerPrev" aria-label="Предыдущий">‹</button>
+  <button class="viewer__nav viewer__nav--next" id="viewerNext" aria-label="Следующий">›</button>
+  <div class="viewer__stage" id="viewerStage">
+    <div class="viewer__art" id="viewerArt"></div>
+  </div>
+  <div class="viewer__foot">
+    <p class="viewer__caption" id="viewerCaption"></p>
+    <div class="viewer__info" id="viewerInfo"></div>
+    <p class="viewer__hint" id="viewerHint"></p>
+  </div>
+</div>
+
+<!-- ЧЕРТЁЖ: схема «как это устроено». Отдельный слой поверх зала, потому что у схемы своя подача
+     (светлая тема, свои цвета) — это чужой язык рядом с тёмным музеем, в разворот её не ставим.
+     Файл ~750 КБ, поэтому адрес подставляется и грузится только при открытии. -->
+<div class="scheme" id="scheme" hidden>
+  <div class="scheme__head">
+    <p class="scheme__cap" id="schemeCap"></p>
+    <a class="cta scheme__open" id="schemeOpen" href="#" target="_blank" rel="noopener">Открыть в новой вкладке</a>
+  </div>
+  <div class="scheme__stage"><iframe id="schemeFrame" title="Схема устройства" loading="lazy"></iframe></div>
+  <button class="scheme__close" id="schemeClose" aria-label="Закрыть чертёж">✕</button>
+</div>
+
+<script>window.LADARA_LANG = "en";</script>
+<script src="data.js?v=14"></script>
+<script src="script.js?v=35"></script>
+<script src="dust.js?v=3"></script>
+</body>
+</html>
