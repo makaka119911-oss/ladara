@@ -232,6 +232,63 @@
     })(performance.now());
   }
 
+  /* ---------- свет идёт за пальцем ----------
+     Луч на фотографии обложки слегка наклоняется к точке касания (на большом экране — к курсору):
+     фотография и канвас с пылью сдвигаются на несколько пикселей в сторону пальца, а пыль едет
+     вместе с лучом, потому что нарисована в том же слое. Сдвиг маленький — 18 px на телефоне
+     и 26 px на большом экране, — поэтому читается как свет, а не как движение картинки;
+     привычный ход при прокрутке (--py) остаётся отдельным и не мешает.
+     Ход сглажен: цель задаёт палец, а слой догоняет её за несколько кадров — рывка нет.
+     Кадры считаем только пока слой догоняет, потом цикл останавливается (батарея).
+     Палец отпустили — луч возвращается в исходное положение. Меньше движения просят — не включаем. */
+  var light = (function () {
+    var cover = document.querySelector('.cover');
+    if (!cover || reduce) return null;
+    var small = innerWidth < 768;
+    // размах считаем по запасу картинки: она выходит за края обложки на 3 % ширины (scale 1.06),
+    // больше сдвигать нельзя — обнажится полоса у края. Пятно света ходит шире: оно без границ.
+    var LX = small ? 9 : 26, LY = small ? 5 : 8;
+    var GX = small ? 48 : 90, GY = small ? 30 : 34;
+    var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+
+    function apply() {
+      cover.style.setProperty('--lx', (cx * LX).toFixed(2) + 'px');
+      cover.style.setProperty('--ly', (cy * LY).toFixed(2) + 'px');
+      cover.style.setProperty('--gx', (cx * GX).toFixed(2) + 'px');
+      cover.style.setProperty('--gy', (cy * GY).toFixed(2) + 'px');
+    }
+    function loop() {
+      cx += (tx - cx) * .12;
+      cy += (ty - cy) * .12;
+      var done = Math.abs(tx - cx) < .002 && Math.abs(ty - cy) < .002;
+      if (done) { cx = tx; cy = ty; }
+      apply();
+      raf = done ? 0 : requestAnimationFrame(loop);
+    }
+    function wake() { if (!raf) raf = requestAnimationFrame(loop); }
+    function poke(x, y) {
+      if (scrollY > innerHeight) return;      // обложка уже ушла — не считаем вовсе
+      tx = Math.max(-1, Math.min(1, (x / innerWidth - .5) * 2));
+      ty = Math.max(-1, Math.min(1, (y / innerHeight - .5) * 2));
+      wake();
+    }
+    function rest() { tx = 0; ty = 0; wake(); }
+
+    addEventListener('pointermove', function (e) { poke(e.clientX, e.clientY); }, { passive: true });
+    addEventListener('touchmove', function (e) {
+      var t = e.touches && e.touches[0]; if (t) poke(t.clientX, t.clientY);
+    }, { passive: true });
+    addEventListener('pointerup', function (e) { if (e.pointerType === 'touch') rest(); }, { passive: true });
+    addEventListener('touchend', rest, { passive: true });
+    addEventListener('resize', function () {
+      small = innerWidth < 768;
+      LX = small ? 9 : 26; LY = small ? 5 : 8;
+      GX = small ? 48 : 90; GY = small ? 30 : 34;
+      apply();
+    });
+    return { poke: poke, get: function () { return { x: cx, y: cy }; } };
+  })();
+
   /* ---------- счётчик, свет зала, нить ---------- */
   var rail = document.getElementById('railFill');
   var numEl = document.getElementById('hallNum');
