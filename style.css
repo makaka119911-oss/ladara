@@ -310,12 +310,13 @@ body.show-plan .plan{display:flex}
    а отсутствие границ (правило от витринного стекла).
    Фотографию НЕ двигаем: мастер посмотрел — «двигается непонятно, не красиво». Ход отдан
    только свету и пыли (пыль едет за лучом на треть его хода). */
-.cover::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+.cover::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;display:none;
   background:
     radial-gradient(24% 19% at calc(62% + var(--gx,0px)) calc(26% + var(--gy,0px)),
       rgba(255,230,186,.13), rgba(255,230,186,0) 76%),
     radial-gradient(64% 48% at calc(62% + var(--gx,0px)) calc(26% + var(--gy,0px)),
       rgba(255,214,150,.10), rgba(255,214,150,0) 80%)}
+.light-on .cover::before{display:block}   /* включает script.js: LIGHT_ON = true */
 .cover__media img{transform:translate3d(0,var(--py,0px),0) scale(1.06);will-change:transform}
 .colophon__media img{transform:translate3d(0,var(--py,0px),0) scale(1.06);will-change:transform}
 @media (prefers-reduced-motion:reduce){
