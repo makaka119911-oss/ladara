@@ -301,6 +301,33 @@
       }
       ts = null;
     }, { passive: true });
+    /* Наклон телефона (брат выбрал этот вариант): луч наклоняется вместе с рукой — ничего
+       нажимать не надо и прокрутке это не мешает. Считаем НЕ абсолютный угол, а отклонение
+       от того, как телефон держат: базовое положение медленно подтягивается к текущему
+       (0,003 за событие, ~10 с), поэтому «держу под другим углом» ничего не ломает,
+       а быстрый наклон чувствуется сразу. Полный ход — 20° наклона, дрожь руки (±1°)
+       срезает мёртвая зона. Нет гироскопа — остаётся касание (свет ведёт к точке).
+       iOS события не отдаёт без разрешения по жесту, там наклон просто не включится. */
+    var TOUCH = matchMedia('(max-width:767px)').matches || matchMedia('(hover:none)').matches;
+    if (TOUCH && typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission !== 'function') {
+      var bx = null, by = null, DEAD = .08, FULL = 20;
+      addEventListener('deviceorientation', function (e) {
+        if (e.gamma == null || e.beta == null) return;
+        var g = e.gamma, b = e.beta;
+        if (screen.orientation && Math.abs(screen.orientation.angle) === 90) {   // лёг телефон набок
+          var t0 = g; g = -b; b = t0;
+        }
+        if (bx === null) { bx = g; by = b; return; }     // первое событие — запоминаем «как держат»
+        bx += (g - bx) * .003; by += (b - by) * .003;
+        var nx = Math.max(-1, Math.min(1, (g - bx) / FULL));
+        var ny = Math.max(-1, Math.min(1, (b - by) / FULL));
+        if (Math.abs(nx) < DEAD) nx = 0;
+        if (Math.abs(ny) < DEAD) ny = 0;
+        tx = nx; ty = ny;
+        wake();
+      }, { passive: true });
+    }
     addEventListener('resize', function () {
       small = innerWidth < 768;
       GX = small ? 60 : 100; GY = small ? 34 : 44;
