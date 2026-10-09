@@ -85,6 +85,15 @@
     var link = w.url
       ? '<a class="cta label__link" href="' + w.url + '" target="_blank" rel="noopener">' + (w.urlLabel || 'Открыть') + '</a>'
       : '';
+    /* Кнопка «Как это устроено» — в нашем языке: та же типографская кнопка, что у ссылок на работы,
+       но вторичным тоном (бронза) и со знаком чертежа. Ссылка настоящая: без скрипта откроется
+       в новой вкладке, со скриптом — слоем поверх зала (см. блок «чертёж» ниже). */
+    var schemeBtn = w.scheme
+      ? '<a class="cta label__scheme" href="' + w.scheme + '" data-scheme="' + w.scheme + '"' +
+        ' data-title="' + w.title + '">' +
+        '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="1"/>' +
+        '<path d="M1 9.5h5.5v-5H13"/></svg>Как это устроено</a>'
+      : '';
 
     sec.innerHTML =
       '<div class="spread__inner">' +
@@ -95,6 +104,7 @@
           '<p class="label__line">' + (w.line || '') + '</p>' +
           '<div class="label__facts">' + facts + '</div>' +
           link +
+          schemeBtn +
         '</div>' +
       '</div>';
     spreads.appendChild(sec);
@@ -477,6 +487,47 @@
     }, { passive: true });
 
     return { settle: settle, joints: joints, threshold: THRESHOLD };
+  })();
+
+  /* ---------- чертёж: схема «как это устроено» ----------
+     Кнопка в табличке зала — в нашем стиле (та же типографская кнопка, вторичным тоном).
+     Ссылка настоящая: без скрипта схема откроется в новой вкладке, со скриптом — отдельным слоем
+     поверх зала, и адрес подставляется только при открытии: файл ~750 КБ, тянуть его заранее нельзя.
+     Пока слой открыт, прокрутка стоит (body overflow hidden) — заодно молчит и довод к стыкам. */
+  (function () {
+    var box = document.getElementById('scheme');
+    if (!box) return;
+    var frame = document.getElementById('schemeFrame');
+    var cap = document.getElementById('schemeCap');
+    var openTab = document.getElementById('schemeOpen');
+    var back = null;
+
+    function open(url, title, from) {
+      back = from || null;
+      cap.textContent = title ? title + ' · как это устроено' : 'Как это устроено';
+      if (frame.getAttribute('src') !== url) frame.setAttribute('src', url);
+      openTab.setAttribute('href', url);
+      box.hidden = false;
+      requestAnimationFrame(function () { box.classList.add('is-open'); });
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      box.classList.remove('is-open');
+      setTimeout(function () { box.hidden = true; }, 320);
+      document.body.style.overflow = '';
+      if (back && back.focus) back.focus();
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('[data-scheme]') : null;
+      if (!a) return;
+      // с нажатым Ctrl/Cmd/Shift пусть открывается в новой вкладке — как обычная ссылка
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      e.preventDefault();
+      open(a.getAttribute('data-scheme'), a.getAttribute('data-title'), a);
+    });
+    document.getElementById('schemeClose').addEventListener('click', close);
+    box.addEventListener('click', function (e) { if (e.target === box) close(); });
+    addEventListener('keydown', function (e) { if (!box.hidden && e.key === 'Escape') close(); });
   })();
 
   /* ---------- рассматривание: глубокий зум ---------- */
