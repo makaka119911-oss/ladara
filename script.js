@@ -372,6 +372,7 @@
   posterItems.forEach(function (p, i) {
     var card = document.getElementById('poster-' + i);
     if (card) book.push({ el: card, art: p.art, big: p.big, title: p.title,
+                          back: p.back, backBig: p.backBig,
                           cap: p.title + (p.note ? ' · ' + p.note : ''), facts: null });
   });
   // буклет листается сразу после афиш — он логично закрывает «Кабинет гравюр»
@@ -522,6 +523,22 @@
   }, { passive: false });
   stage.addEventListener('dblclick', function (e) { e.preventDefault(); resetZoom(); });
 
+  /* Переворот листовки: сразу показываем лёгкую версию стороны (она уже в кэше), следом
+     подменяем крупной, а пределы зума считаем по её разрешению — как при обычном открытии. */
+  function flipSide(item, btn) {
+    var img = artBox.querySelector('img');
+    if (!img) return;
+    item.side = item.side ? 0 : 1;
+    var light = item.side ? item.back : item.art;
+    var heavy = item.side ? (item.backBig || item.back) : (item.big || item.art);
+    img.src = light;
+    var big = new Image();
+    big.onload = function () { img.src = big.src; MAX = zoomLimitFor(big); };
+    big.src = heavy;
+    btn.textContent = item.side ? 'Лицевая сторона' : 'Обратная сторона';
+    resetZoom();
+  }
+
   function paint() {
     var item = zoomable[idx];
     if (!item) return;
@@ -546,6 +563,17 @@
     infoBox.innerHTML = [['Что это', f.what], ['Из чего сделано', f.made], ['Состояние', f.state]]
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
+    // Листовка с двумя сторонами: кнопка в подписи переворачивает её.
+    // Сторона живёт в самом экспонате, поэтому при повторном открытии снова лицевая.
+    item.side = 0;
+    if (item.back) {
+      var flip = document.createElement('button');
+      flip.type = 'button';
+      flip.className = 'viewer__flip';
+      flip.textContent = 'Обратная сторона';
+      flip.addEventListener('click', function (e) { e.stopPropagation(); flipSide(item, flip); });
+      infoBox.appendChild(flip);
+    }
     hint.classList.remove('is-faded');
     requestAnimationFrame(function () { hint.classList.add('is-faded'); });
     if (zoomable[idx + 1]) { var im = new Image(); im.src = zoomable[idx + 1].art; }
