@@ -9,8 +9,96 @@
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = matchMedia('(hover:none)').matches;
 
+  /* ---------- язык ----------
+     Русский — основной. Английский включается адресом (?lang=en), запоминается в localStorage
+     и живёт отдельным словарём в data.js (M.en): ui — подписи интерфейса, остальное — тексты тех же
+     разделов. При переключении страница перезагружается (так надёжнее: перерисовывается всё сразу),
+     но место в музее сохраняется — позицию прокрутки запоминаем и возвращаем. */
+  var LANG = (function () {
+    var q = new URLSearchParams(location.search).get('lang');
+    if (q === 'en' || q === 'ru') return q;
+    try { var s = localStorage.getItem('ladara-lang'); if (s === 'en' || s === 'ru') return s; } catch (e) {}
+    return 'ru';
+  })();
+  var EN = (LANG === 'en' && M.en) ? M.en : null;
+
+  /* Слияние: объекты — по ключам, массивы — по порядку (порядок в обоих языках совпадает).
+     Чего в переводе нет — остаётся русским, страница не ломается. */
+  function mix(ru, en) {
+    if (en == null) return ru;
+    if (Array.isArray(ru)) return ru.map(function (x, i) { return mix(x, en[i]); });
+    if (ru && typeof ru === 'object') {
+      var out = {}, e = en || {};
+      // ключи берём из обоих языков: словарь интерфейса (ui) есть только в переводе
+      Object.keys(ru).forEach(function (k) { out[k] = mix(ru[k], e[k]); });
+      Object.keys(e).forEach(function (k) { if (!(k in out)) out[k] = e[k]; });
+      return out;
+    }
+    return en;
+  }
+  M = EN ? mix(M, EN) : M;
+
+  /* Подписи интерфейса: русские по умолчанию, английские — из словаря. */
+  var RU = {
+    brand: 'студия', cap: 'Экспозиция', hall: 'Зал', of: 'из', cover: 'Обложка', about: 'Мастер',
+    end: 'Колофон', planLabel: 'Залы', planAria: 'План залов', factsWhat: 'Что это',
+    factsMade: 'Из чего сделано', factsState: 'Состояние', zoom: 'Рассмотреть',
+    emptyPlate: 'здесь будет ваша работа', stub: 'экспонат готовится', open: 'Открыть',
+    scheme: 'Как это устроено', schemeCcap: 'как это устроено', schemeTab: 'Открыть в новой вкладке',
+    flipBack: 'Обратная сторона', flipFront: 'Лицевая сторона',
+    hintCoarse: 'Тап — приблизить · двумя пальцами — свободно · ещё тап — вернуть',
+    hintFine: 'Клик — приблизить · колесо — свободно · Esc — закрыть',
+    close: 'Закрыть', prev: 'Предыдущий', next: 'Следующий',
+    noscript: 'Экспонаты: Семь ремёсел · Сексология и психология · Женский мир · Ваш проект',
+    title: 'LADARA — работы: сайты, приложения, боты',
+    description: 'Каталог работ студии LADARA: сайты, приложения и боты. Живые экспонаты — «Семь ремёсел», «Сексология и психология», «Женский мир».'
+  };
+  var UI = M.ui ? mix(RU, M.ui) : RU;
+
   function txt(id, v){ var e = document.getElementById(id); if (e && v != null) e.textContent = v; }
   function html(id, v){ var e = document.getElementById(id); if (e && v != null) e.innerHTML = v; }
+
+  /* Язык в документе: <html lang>, заголовок, описание, подпись студии и служебные aria */
+  document.documentElement.lang = LANG;
+  document.title = UI.title;
+  var md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute('content', UI.description);
+  var brandSpan = document.querySelector('.brand span');
+  if (brandSpan) brandSpan.textContent = UI.brand;
+  var noScript = document.querySelector('noscript p');
+  if (noScript) noScript.textContent = UI.noscript;
+  /* Служебные подписи для чтения с экрана — тоже из словаря */
+  [['viewerClose', UI.close], ['viewerPrev', UI.prev], ['viewerNext', UI.next], ['schemeClose', UI.close]]
+    .forEach(function (p) { var e = document.getElementById(p[0]); if (e) e.setAttribute('aria-label', p[1]); });
+  var planBox = document.getElementById('plan');
+  if (planBox) planBox.setAttribute('aria-label', UI.planAria);
+  var idxNav = document.getElementById('coverIndex');
+  if (idxNav) idxNav.setAttribute('aria-label', UI.cap);
+
+  /* Переключатель языка: подчёркиваем текущий, а по нажатию запоминаем выбор и место в музее. */
+  (function () {
+    var box = document.getElementById('lang');
+    if (!box) return;
+    box.setAttribute('aria-label', LANG === 'en' ? 'Language' : 'Язык');
+    [].forEach.call(box.querySelectorAll('a'), function (a) {
+      var on = a.getAttribute('data-lang') === LANG;
+      a.classList.toggle('on', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        try { localStorage.setItem('ladara-lang', a.getAttribute('data-lang')); } catch (err) {}
+        try { sessionStorage.setItem('ladara-y', String(Math.round(scrollY))); } catch (err) {}
+        location.href = location.pathname + '?lang=' + a.getAttribute('data-lang');
+      });
+    });
+    try {
+      var y = sessionStorage.getItem('ladara-y');
+      if (y) {
+        sessionStorage.removeItem('ladara-y');
+        requestAnimationFrame(function () { scrollTo(0, parseInt(y, 10) || 0); });
+      }
+    } catch (err) {}
+  })();
 
   var works = (M.works || []).filter(function (w) { return w && w.title; });
   // настоящий вид работы (shot) важнее атмосферы зала — этап 2 только дописывает поле
@@ -45,7 +133,7 @@
   /* ---------- перечень работ на обложке ---------- */
   var coverIndex = document.getElementById('coverIndex');
   if (coverIndex) {
-    coverIndex.innerHTML = '<p class="index__cap">Экспозиция</p>' + works.map(function (w, i) {
+    coverIndex.innerHTML = '<p class="index__cap">' + UI.cap + '</p>' + works.map(function (w, i) {
       return '<a class="rv rv--fast" style="--rv-d:' + (i * 40) + 'ms" href="#hall-' + (i + 1) + '">' +
         '<span class="index__n">' + (w.num || ('0' + (i + 1))) + '</span>' +
         '<span class="index__t">' + w.title + '<span class="index__l">' + (w.line || '') + '</span></span>' +
@@ -68,22 +156,22 @@
          а стена — мягкое светлое пятно и тень от снятого холста, поэтому место читается свободным,
          а не «картинка не загрузилась». Подпись под рамой — маленькая, вразрядку. */
       plate = '<div class="plate plate--empty rv" style="--rv-d:0ms">' +
-              '<span class="plate__note">здесь будет ваша работа</span></div>';
+              '<span class="plate__note">' + UI.emptyPlate + '</span></div>';
     } else if (w.stub || !w.art) {
       plate = '<div class="stub rv" style="--rv-d:0ms"><span class="stub__num">' + (w.num || '') + '</span>' +
-              '<span class="stub__note">экспонат готовится</span></div>';
+              '<span class="stub__note">' + UI.stub + '</span></div>';
     } else {
       plate = '<figure class="plate rv" style="--rv-d:0ms"><img src="' + w.art + '" alt="' + w.title + '" loading="lazy">' +
-              '<button class="plate__zoom" aria-label="Рассмотреть">Рассмотреть</button></figure>';
+              '<button class="plate__zoom" aria-label="' + UI.zoom + '">' + UI.zoom + '</button></figure>';
     }
 
     var f = w.facts || {};
-    var facts = [['Что это', f.what], ['Из чего сделано', f.made], ['Состояние', f.state]]
+    var facts = [[UI.factsWhat, f.what], [UI.factsMade, f.made], [UI.factsState, f.state]]
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
 
     var link = w.url
-      ? '<a class="cta label__link" href="' + w.url + '" target="_blank" rel="noopener">' + (w.urlLabel || 'Открыть') + '</a>'
+      ? '<a class="cta label__link" href="' + w.url + '" target="_blank" rel="noopener">' + (w.urlLabel || UI.open) + '</a>'
       : '';
     /* Кнопка «Как это устроено» — в нашем языке: та же типографская кнопка, что у ссылок на работы,
        но вторичным тоном (бронза) и со знаком чертежа. Ссылка настоящая: без скрипта откроется
@@ -92,12 +180,12 @@
       ? '<a class="cta label__scheme" href="' + w.scheme + '" data-scheme="' + w.scheme + '"' +
         ' data-title="' + w.title + '">' +
         '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="1"/>' +
-        '<path d="M1 9.5h5.5v-5H13"/></svg>Как это устроено</a>'
+        '<path d="M1 9.5h5.5v-5H13"/></svg>' + UI.scheme + '</a>'
       : '';
 
     sec.innerHTML =
       '<div class="spread__inner">' +
-        '<p class="spread__num rv" style="--rv-d:80ms">Зал ' + (w.hall || '') + ' · ' + (w.num || '') + (w.year ? ' · ' + w.year : '') + '</p>' +
+        '<p class="spread__num rv" style="--rv-d:80ms">' + UI.hall + ' ' + (w.hall || '') + ' · ' + (w.num || '') + (w.year ? ' · ' + w.year : '') + '</p>' +
         plate +
         '<div class="label rv" style="--rv-d:160ms">' +
           '<h2 class="label__title">' + w.title + '</h2>' +
@@ -144,7 +232,7 @@
   /* ---------- план залов ---------- */
   var plan = document.getElementById('plan');
   if (plan && works.length) {
-    plan.innerHTML = '<span class="plan__lbl">Залы</span>' + works.map(function (w, i) {
+    plan.innerHTML = '<span class="plan__lbl">' + UI.planLabel + '</span>' + works.map(function (w, i) {
       return '<a href="#hall-' + (i + 1) + '">' + (w.num || (i + 1)) + '</a>';
     }).join('');
   }
@@ -367,7 +455,7 @@
   var rail = document.getElementById('railFill');
   var numEl = document.getElementById('hallNum');
   var totalEl = document.getElementById('hallTotal');
-  if (totalEl) totalEl.textContent = 'из ' + works.length;
+  if (totalEl) totalEl.textContent = UI.of + ' ' + works.length;
 
   var lastState = '';
   function frame() {
@@ -378,11 +466,11 @@
     sweep();
 
     var mid = scrollY + innerHeight * .5;
-    var current = null, state = 'cover', label = 'Обложка';
+    var current = null, state = 'cover', label = UI.cover;
 
     halls.forEach(function (el, i) {
       if (mid >= el.offsetTop && mid < el.offsetTop + el.offsetHeight) {
-        current = el; state = 'hall'; label = 'Зал ' + el.getAttribute('data-hall');
+        current = el; state = 'hall'; label = UI.hall + ' ' + el.getAttribute('data-hall');
         var accent = el.getAttribute('data-accent');
         // на тёмной стене отсвет зала должен быть заметнее, чем на светлой
         // 20% оказалось мало: на бою залы почти не различались по цвету (замер тестировщика)
@@ -397,9 +485,9 @@
       }
     });
     if (!current && about && mid >= about.offsetTop && mid < about.offsetTop + about.offsetHeight) {
-      state = 'wall'; label = 'Мастер';
+      state = 'wall'; label = UI.about;
     }
-    if (!current && colophon && mid >= colophon.offsetTop) { state = 'end'; label = 'Колофон'; }
+    if (!current && colophon && mid >= colophon.offsetTop) { state = 'end'; label = UI.end; }
 
     if (numEl && numEl.textContent !== label) numEl.textContent = label;
 
@@ -504,9 +592,10 @@
 
     function open(url, title, from) {
       back = from || null;
-      cap.textContent = title ? title + ' · как это устроено' : 'Как это устроено';
+      cap.textContent = title ? title + ' · ' + UI.schemeCcap : UI.scheme;
       if (frame.getAttribute('src') !== url) frame.setAttribute('src', url);
       openTab.setAttribute('href', url);
+      openTab.textContent = UI.schemeTab;
       box.hidden = false;
       requestAnimationFrame(function () { box.classList.add('is-open'); });
       document.body.style.overflow = 'hidden';
@@ -544,7 +633,7 @@
     if (w.stub || !w.art) return;
     var plate = document.querySelector('#hall-' + (i + 1) + ' .plate');
     if (plate) book.push({ el: plate, art: w.art, title: w.title,
-                           cap: w.title + ' · Зал ' + (w.hall || ''), facts: w.facts });
+                           cap: w.title + ' · ' + UI.hall + ' ' + (w.hall || ''), facts: w.facts });
   });
   posterItems.forEach(function (p, i) {
     var card = document.getElementById('poster-' + i);
@@ -569,8 +658,8 @@
   // поэтому щипок ниже 1 сразу возвращает в 1× с нулевым сдвигом.
 
   if (hint) hint.textContent = coarse
-    ? 'Тап — приблизить · двумя пальцами — свободно · ещё тап — вернуть'
-    : 'Клик — приблизить · колесо — свободно · Esc — закрыть';
+    ? UI.hintCoarse
+    : UI.hintFine;
 
   function apply(animate) {
     artBox.style.transition = animate ? 'transform .42s cubic-bezier(.22,1,.36,1)' : 'none';
@@ -711,7 +800,7 @@
     var big = new Image();
     big.onload = function () { img.src = big.src; MAX = zoomLimitFor(big); };
     big.src = heavy;
-    btn.textContent = item.side ? 'Лицевая сторона' : 'Обратная сторона';
+    btn.textContent = item.side ? UI.flipFront : UI.flipBack;
     resetZoom();
   }
 
@@ -736,7 +825,7 @@
     resetZoom();
     cap.textContent = item.cap;
     var f = item.facts || {};
-    infoBox.innerHTML = [['Что это', f.what], ['Из чего сделано', f.made], ['Состояние', f.state]]
+    infoBox.innerHTML = [[UI.factsWhat, f.what], [UI.factsMade, f.made], [UI.factsState, f.state]]
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
     // Листовка с двумя сторонами: кнопка в подписи переворачивает её.
@@ -746,7 +835,7 @@
       var flip = document.createElement('button');
       flip.type = 'button';
       flip.className = 'viewer__flip';
-      flip.textContent = 'Обратная сторона';
+      flip.textContent = UI.flipBack;
       flip.addEventListener('click', function (e) { e.stopPropagation(); flipSide(item, flip); });
       infoBox.appendChild(flip);
     }
