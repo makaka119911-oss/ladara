@@ -69,6 +69,11 @@ window.MUSEUM = {
       { art: 'img/posters/bogini-nikiforovki.webp',           big: 'img/posters/big/bogini-nikiforovki.webp',           title: 'Богини Никифоровки',           note: 'открытая фотосессия · июль 2026' },
       { art: 'img/posters/fotosessiya-v-nikiforovke.webp',    big: 'img/posters/big/fotosessiya-v-nikiforovke.webp',    title: 'Фотосессия в Никифоровке',     note: 'коллекция макраме · июль' },
       { art: 'img/posters/ognennyy-massazh.webp',             big: 'img/posters/big/ognennyy-massazh.webp',             title: 'Огненный массаж',              note: 'церемония с поющими чашами · Реутово' },
+      /* Листовка с двумя сторонами: на стене показываем лицевую, в просмотре её можно перевернуть
+         (кнопка «Обратная сторона»). Держим рядом с «Огненным массажем» — это одна и та же услуга. */
+      { art: 'img/posters/ognennaya-ceremoniya.webp',         big: 'img/posters/big/ognennaya-ceremoniya.webp',
+        back: 'img/posters/ognennaya-ceremoniya-2.webp',      backBig: 'img/posters/big/ognennaya-ceremoniya-2.webp',
+        title: 'Огненная церемония',                          note: 'листовка, две стороны · массаж огнём · Реутов' },
       { art: 'img/posters/misteriya-chuvstvennosti.webp',     big: 'img/posters/big/misteriya-chuvstvennosti.webp',     title: 'Мистерия чувственности',       note: 'частный замок · 29 марта' }
     ],
     /* Не афиша события, а перечень услуг — поэтому не в стене, а карточкой под ней. */
