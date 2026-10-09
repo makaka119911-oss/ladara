@@ -159,8 +159,12 @@ body.show-plan .plan{display:flex}
 }
 
 @media (max-height:800px){
-  .cover__inner{padding-top:var(--s6);padding-bottom:var(--s4);gap:var(--s4)}
-  .index a{padding:var(--s2) 0}
+  .cover__inner{padding-top:var(--s6);padding-bottom:var(--s3);gap:var(--s4)}
+  /* Четыре зала вместо трёх: список вырос на строку, и заголовок поднимался к метке — она приколота
+     под подписью студии, и между ними оставалось 2 px (было видно, что метка снова липнет к заголовку).
+     Освобождаем высоту: шаг строки — три четверти --s2 (46 px на палец), у шапки списка шаг вниз. */
+  .index a{padding:calc(var(--s2) * .75) 0}
+  .index__cap{margin-bottom:var(--s1)}
 }
 @media (max-height:680px){
   .cover__inner{padding-top:var(--s4);gap:var(--s3)}
@@ -213,6 +217,20 @@ body.show-plan .plan{display:flex}
       rgba(255,255,255,0) 78%)}
 .plate:hover .plate__zoom,.plate:focus-within .plate__zoom{opacity:1;transform:none}
 @media (hover:none){ .plate__zoom{opacity:1;transform:none} }
+
+/* Зал-приглашение: пустая рама — тот же багет, что у работ, но внутри не картина, а стена:
+   мягкое светлое пятно сверху и тень от снятого холста. Так место читается свободным,
+   а не «картинка не загрузилась». Подпись внутри — маленькая, вразрядку, не в фокусе. */
+.plate--empty{aspect-ratio:16/10;cursor:default;display:grid;place-items:end center;
+  padding-bottom:var(--s5);border:var(--fr) solid transparent;
+  border-image:url('img/baget.webp?v=2') 36 / var(--fr) repeat;
+  background:
+    radial-gradient(120% 85% at 50% 0%,rgba(255,235,205,.06),rgba(255,235,205,0) 62%),
+    linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.22));
+  box-shadow:inset 0 40px 70px -40px rgba(0,0,0,.9),0 60px 120px -50px rgba(0,0,0,.95)}
+@media (max-width:767px){ .plate--empty{aspect-ratio:4/5} }
+.plate__note{font:500 var(--t1)/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(201,161,94,.5);text-align:center}
 
 /* этикетка: строгая сетка, как в каталоге */
 .label{display:grid;gap:var(--s3) var(--s4);margin-top:var(--s5);
