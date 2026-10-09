@@ -14,7 +14,7 @@ window.MUSEUM = {
     /* перенос — жёсткий, для большого экрана. ПРОБЕЛ перед переносом обязателен:
        на телефоне <br> гасится, и без пробела «приложения,» и «боты» слипаются
        в одно непереносимое слово 253 px — оно вылезало за 62 % и заезжало на раму на 45 px */
-    title: 'Сайты, приложения, \nботы',
+    title: 'Приложения, сайты, \nботы',
     offer: 'Собираю цифровые вещи: сайты, приложения, ботов. Вручную, без конструкторов.',
     cta: 'Войти в галерею',
     image: 'img/hero-phone.jpg',     // телефон
@@ -224,7 +224,7 @@ window.MUSEUM = {
     },
     hero: {
       kicker: 'Selected work',
-      title: 'Websites, apps, \nbots',
+      title: 'Apps, websites, \nbots',
       offer: 'I build digital things: websites, apps and bots. By hand, without site builders.',
       cta: 'Enter the gallery'
     },
