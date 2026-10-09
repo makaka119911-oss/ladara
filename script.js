@@ -10,11 +10,13 @@
   var coarse = matchMedia('(hover:none)').matches;
 
   /* ---------- язык ----------
-     Русский — основной. Английский включается адресом (?lang=en), запоминается в localStorage
-     и живёт отдельным словарём в data.js (M.en): ui — подписи интерфейса, остальное — тексты тех же
-     разделов. При переключении страница перезагружается (так надёжнее: перерисовывается всё сразу),
-     но место в музее сохраняется — позицию прокрутки запоминаем и возвращаем. */
+     Русский — основная версия (адрес /), английская — отдельная страница /en (у неё свои
+     английские теги для превью ссылки). ?lang=en|ru оставлен для совместимости, выбор
+     запоминается в localStorage. При переключении страница перезагружается (так перерисовывается
+     всё сразу), но место в музее сохраняется: позицию прокрутки запоминаем и возвращаем. */
   var LANG = (function () {
+    var inEn = /\/en\/(index\.html)?$/.test(location.pathname);   // адрес /en/ — английская версия
+    if (inEn || window.LADARA_LANG === 'en') return 'en';
     var q = new URLSearchParams(location.search).get('lang');
     if (q === 'en' || q === 'ru') return q;
     try { var s = localStorage.getItem('ladara-lang'); if (s === 'en' || s === 'ru') return s; } catch (e) {}
@@ -75,20 +77,26 @@
   var idxNav = document.getElementById('coverIndex');
   if (idxNav) idxNav.setAttribute('aria-label', UI.cap);
 
-  /* Переключатель языка: подчёркиваем текущий, а по нажатию запоминаем выбор и место в музее. */
+  /* Переключатель языка: ведёт на /en/ или на корень сайта (адреса считаем от пути, а не строкой
+     в разметке — на странице /en работает <base>, из-за которого относительные ссылки поехали бы).
+     Перед уходом запоминаем место в музее, после перезагрузки возвращаем его. */
   (function () {
     var box = document.getElementById('lang');
     if (!box) return;
+    var root = location.pathname.replace(/(en\/)?(index\.html)?$/, '');   // корень сайта
+    var hrefs = { ru: root, en: root + 'en/' };
     box.setAttribute('aria-label', LANG === 'en' ? 'Language' : 'Язык');
     [].forEach.call(box.querySelectorAll('a'), function (a) {
-      var on = a.getAttribute('data-lang') === LANG;
+      var code = a.getAttribute('data-lang');
+      var on = code === LANG;
+      a.setAttribute('href', hrefs[code] || './');
       a.classList.toggle('on', on);
       if (on) a.setAttribute('aria-current', 'true');
       a.addEventListener('click', function (e) {
         e.preventDefault();
-        try { localStorage.setItem('ladara-lang', a.getAttribute('data-lang')); } catch (err) {}
+        try { localStorage.setItem('ladara-lang', code); } catch (err) {}
         try { sessionStorage.setItem('ladara-y', String(Math.round(scrollY))); } catch (err) {}
-        location.href = location.pathname + '?lang=' + a.getAttribute('data-lang');
+        location.href = a.getAttribute('href');
       });
     });
     try {
@@ -98,6 +106,16 @@
         requestAnimationFrame(function () { scrollTo(0, parseInt(y, 10) || 0); });
       }
     } catch (err) {}
+  })();
+
+  /* Ссылки внутри страницы: ведём полным путём, иначе на /en их перехватит <base> и клик
+     превратится в перезагрузку. */
+  (function () {
+    var here = location.pathname;
+    var brand = document.querySelector('.brand');
+    if (brand) brand.setAttribute('href', here + '#top');
+    var cta = document.getElementById('coverCta');
+    if (cta) cta.setAttribute('href', here + '#hall-1');
   })();
 
   var works = (M.works || []).filter(function (w) { return w && w.title; });
@@ -134,7 +152,7 @@
   var coverIndex = document.getElementById('coverIndex');
   if (coverIndex) {
     coverIndex.innerHTML = '<p class="index__cap">' + UI.cap + '</p>' + works.map(function (w, i) {
-      return '<a class="rv rv--fast" style="--rv-d:' + (i * 40) + 'ms" href="#hall-' + (i + 1) + '">' +
+      return '<a class="rv rv--fast" style="--rv-d:' + (i * 40) + 'ms" href="' + location.pathname + '#hall-' + (i + 1) + '">' +
         '<span class="index__n">' + (w.num || ('0' + (i + 1))) + '</span>' +
         '<span class="index__t">' + w.title + '<span class="index__l">' + (w.line || '') + '</span></span>' +
       '</a>';
@@ -233,7 +251,7 @@
   var plan = document.getElementById('plan');
   if (plan && works.length) {
     plan.innerHTML = '<span class="plan__lbl">' + UI.planLabel + '</span>' + works.map(function (w, i) {
-      return '<a href="#hall-' + (i + 1) + '">' + (w.num || (i + 1)) + '</a>';
+      return '<a href="' + location.pathname + '#hall-' + (i + 1) + '">' + (w.num || (i + 1)) + '</a>';
     }).join('');
   }
   var planLinks = plan ? [].slice.call(plan.querySelectorAll('a')) : [];
