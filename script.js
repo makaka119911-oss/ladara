@@ -105,14 +105,19 @@
     }).join('');
   }
 
-  /* Карточка-буклет: не афиша события, а перечень услуг — стоит отдельно под стеной. */
+  /* Карточки-буклеты: не афиши событий, а работы без даты (перечни услуг, листовки) —
+     стоят отдельно под стеной. Их может быть несколько, поэтому список, а не одна карточка:
+     на телефоне идут колонкой, на большом экране — рядом. */
   var leafBox = document.getElementById('posterLeaflet');
-  var leaf = P.leaflet;
-  if (leafBox && leaf && leaf.art) {
-    leafBox.innerHTML = '<figure class="leaflet rv" id="leaflet">' +
-      '<img src="' + leaf.art + '" data-big="' + (leaf.big || '') + '" alt="' + leaf.title + '" loading="lazy">' +
-      '<figcaption class="poster__cap"><b>' + leaf.title + '</b>' + (leaf.note || '') + '</figcaption>' +
-    '</figure>';
+  var leafs = [].concat(P.leaflet || []).filter(function (x) { return x && x.art; });
+  if (leafBox && leafs.length) {
+    leafBox.className = 'leaflets';
+    leafBox.innerHTML = leafs.map(function (leaf, i) {
+      return '<figure class="leaflet rv" style="--rv-d:' + (i * 70) + 'ms" id="leaflet-' + i + '">' +
+        '<img src="' + leaf.art + '" data-big="' + (leaf.big || '') + '" alt="' + leaf.title + '" loading="lazy">' +
+        '<figcaption class="poster__cap"><b>' + leaf.title + '</b>' + (leaf.note || '') + '</figcaption>' +
+      '</figure>';
+    }).join('');
   }
 
   var halls = [].slice.call(document.querySelectorAll('.spread'));
@@ -375,14 +380,13 @@
                           back: p.back, backBig: p.backBig,
                           cap: p.title + (p.note ? ' · ' + p.note : ''), facts: null });
   });
-  // буклет листается сразу после афиш — он логично закрывает «Кабинет гравюр»
-  (function () {
-    var el = document.getElementById('leaflet');
-    if (el && leaf && leaf.art) {
-      book.push({ el: el, art: leaf.art, big: leaf.big, title: leaf.title,
-                  cap: leaf.title + (leaf.note ? ' · ' + leaf.note : ''), facts: null });
-    }
-  })();
+  // буклеты листаются сразу после афиш — они логично закрывают «Кабинет гравюр»
+  leafs.forEach(function (leaf, i) {
+    var el = document.getElementById('leaflet-' + i);
+    if (el) book.push({ el: el, art: leaf.art, big: leaf.big, title: leaf.title,
+                        back: leaf.back, backBig: leaf.backBig,
+                        cap: leaf.title + (leaf.note ? ' · ' + leaf.note : ''), facts: null });
+  });
   var zoomable = book;
 
   var idx = 0, scale = 1, tx = 0, ty = 0, MIN = 1, MAX = 6;
