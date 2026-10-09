@@ -293,6 +293,61 @@
   frame();
   setInterval(frame, 500);        // страховка: счётчик жив и там, где кадры заморожены
 
+  /* ---------- притяжение прокрутки к стыкам залов ----------
+     Мастер: «при снайпере, когда оставалось немного, — само доводило до стыков: сверху стык
+     и внизу». Сначала я сделал это на CSS (scroll-snap-type: proximity) — на телефоне вышло
+     рывками: движок сам решает, когда дотягивать, тянет до 200 px (треть экрана) и дёргает
+     во время инерции. Здесь тот же смысл, но под нашим контролем:
+       · тянем только если до стыка осталось меньше 100 px (100 из 700 — «немного», как просил);
+       · доводим не рывком, а коротким плавным движением — 280 мс, ease-out (тормозим у стыка);
+       · стык — это начало зала у верхнего края ИЛИ конец зала у нижнего (высота зала минус
+         экран) — то самое «стык сверху и стык внизу»;
+       · палец снова коснулся экрана — довод немедленно отменяем, страница слушается человека;
+       · защита от залипания: если мастер сам отъехал от стыка меньше чем на 200 px, обратно
+         не тянем (иначе страница «прилипала» бы к одному и тому же месту).
+     Только телефон: на большом экране с колесом это было бы навязчиво. */
+  var magnet = (function () {
+    if (reduce || !matchMedia('(max-width:767px)').matches) return null;
+    var THRESHOLD = 100;   // ближе этого — доводим; дальше — страница слушается человека
+    var timer = null;
+
+    function joints() {
+      var vh = innerHeight, max = Math.max(0, document.documentElement.scrollHeight - vh);
+      var list = [];
+      [document.querySelector('.cover')].concat(halls, [about, colophon]).forEach(function (el) {
+        if (!el) return;
+        var top = el.offsetTop, h = el.offsetHeight;
+        list.push(Math.min(max, top));                      // начало зала — к верхнему краю
+        if (h > vh) list.push(Math.min(max, top + h - vh)); // конец зала — к нижнему краю
+      });
+      return list;
+    }
+
+    function settle() {
+      if (document.body.style.overflow === 'hidden') return;   // открыт просмотр афиши
+      var y = scrollY, best = null, bestD = Infinity;
+      joints().forEach(function (t) {
+        var d = Math.abs(t - y);
+        if (d < bestD) { bestD = d; best = t; }
+      });
+      // bestD < 2 — уже стоим на стыке. Эта же проверка гасит и наш собственный довод:
+      // его завершение тоже даёт scrollend, а без проверки вышло бы «доводим довод».
+      if (best === null || bestD < 2 || bestD > THRESHOLD) return;
+      // Доводим нативной плавной прокруткой: кадры анимирует сам браузер (ровно, без нашего
+      // цикла), а новое касание экрана отменяет её само — страница всегда слушается пальца.
+      scrollTo({ top: best, behavior: 'smooth' });
+    }
+
+    // срабатываем, когда жест (или инерция) закончился; где нет scrollend — по затишью
+    if ('onscrollend' in window) addEventListener('scrollend', settle, { passive: true });
+    else addEventListener('scroll', function () {
+      clearTimeout(timer);
+      timer = setTimeout(settle, 160);
+    }, { passive: true });
+
+    return { settle: settle, joints: joints, threshold: THRESHOLD };
+  })();
+
   /* ---------- рассматривание: глубокий зум ---------- */
   var viewer = document.getElementById('viewer');
   var stage = document.getElementById('viewerStage');
