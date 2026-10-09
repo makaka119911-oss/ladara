@@ -303,17 +303,23 @@ body.show-plan .plan{display:flex}
    фотографию и канвас с пылью — пыль нарисована в том же слое, поэтому едет вместе с лучом.
    Слой .cover__media при этом не трогаем: внутри него живёт ::after — растворение края
    в тон стены, и его сдвиг обнажил бы полосу у нижнего стыка обложки. */
-.cover__media img{transform:translate3d(var(--lx,0px),calc(var(--py,0px) + var(--ly,0px)),0) scale(1.06);will-change:transform}
-/* Мягкое тёплое пятно поверх фотографии — само «светило», которое наклоняется к пальцу
-   (--gx/--gy). Краёв у него нет: у эффекта важна не амплитуда, а отсутствие границ —
-   ровная засветка невидима, а пятно с границей читается как наклейка (проверено на стекле витрины).
-   Фотография и пыль при этом смещаются меньше (--lx/--ly): луч поворачивается, картинка не съезжает. */
-.cover__media::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:radial-gradient(52% 38% at calc(62% + var(--gx,0px)) calc(26% + var(--gy,0px)),
-    rgba(255,214,150,.17), rgba(255,214,150,.07) 46%, rgba(255,214,150,0) 74%)}
+/* Мягкое тёплое пятно света — «светило», которое наклоняется к пальцу (--gx/--gy).
+   Живёт НАД вуалью (.cover::after — она гасит всё под собой почти вдвое: прозрачность .5,
+   и первая версия пятна внутри медиа-слоя читалась как «ничего не заметно» — глазом, и это
+   подтвердил замер). z-index 2 — тот же, что у текста, но ::before идёт раньше в дереве,
+   поэтому текст и кнопка остаются сверху.
+   Краёв у пятна нет — ядро и широкий ореол: у эффекта важна не амплитуда, а отсутствие границ. */
+.cover::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:
+    radial-gradient(24% 19% at calc(62% + var(--gx,0px)) calc(26% + var(--gy,0px)),
+      rgba(255,230,186,.22), rgba(255,230,186,0) 72%),
+    radial-gradient(64% 48% at calc(62% + var(--gx,0px)) calc(26% + var(--gy,0px)),
+      rgba(255,214,150,.17), rgba(255,214,150,0) 76%)}
+.cover__media img{transform:translate3d(var(--lx,0px),calc(var(--py,0px) + var(--ly,0px)),0) scale(1.10);will-change:transform}
 .colophon__media img{transform:translate3d(0,var(--py,0px),0) scale(1.06);will-change:transform}
 @media (prefers-reduced-motion:reduce){
   .cover__media img,.colophon__media img{transform:none;will-change:auto}
+  .cover::before{display:none}   /* пятно света живёт только вместе с движением */
 }
 
 /* ---------- рассматривание ---------- */
