@@ -104,6 +104,15 @@ body.show-plan .plan{display:flex}
 /* ---------- обложка ---------- */
 .cover{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
 .cover__media{position:absolute;inset:0;z-index:0}
+/* Дыхание кадра: фотография и пыль вместе очень медленно приближаются и отходят — 2 % за 26 секунд.
+   Это не движение, которое ловит глаз, а признак жизни: кадр перестаёт быть фотографией.
+   Анимируем отдельную обёртку, потому что transform картинки занят параллаксом, а у медиа-слоя
+   трогать нельзя: внутри него ::after — растворение края в тон стены, и сдвиг обнажил бы полосу.
+   Выключить: effects.breath = false в data.js (скрипт ставит на body класс no-breath). */
+.cover__drift{position:absolute;inset:0;animation:breath 20s ease-in-out infinite alternate}
+@keyframes breath{from{transform:scale(1)}to{transform:scale(1.025)}}
+.no-breath .cover__drift{animation:none}
+@media (prefers-reduced-motion:reduce){ .cover__drift{animation:none} }
 .cover__media img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
 /* пыль в свете зала: канвас внутри медиа-слоя, поэтому вуаль и текст остаются выше него.
    Две секции — обложка и колофон; больше нигде (в залах фон без источника света) */
