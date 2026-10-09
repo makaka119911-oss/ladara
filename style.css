@@ -65,6 +65,16 @@ p{margin:0}
   font-size:var(--t1);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
   transition:opacity .45s var(--ease)}
 .counter b{display:block;font-weight:500;color:var(--ink)}
+/* Переключатель языка: под счётчиком залов, тем же набором, что подпись студии.
+   Текущий язык — бронзой, второй тише. На обложке счётчик скрыт, а переключатель виден всегда. */
+.lang{position:fixed;top:calc(var(--s3) + 46px + env(safe-area-inset-top,0px));right:var(--pad);
+  z-index:8;display:flex;align-items:center;gap:var(--s1);
+  font:500 var(--t1)/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.lang a{color:inherit;text-decoration:none;opacity:.5;
+  transition:color .3s var(--ease),opacity .3s var(--ease)}
+.lang a:hover{opacity:1}
+.lang a.on{color:var(--bronze);opacity:1}
+.lang span{opacity:.3}
 
 /* Обложка — не зал: счётчик «ОБЛОЖКА ИЗ 3» там не нужен, а бренд, пока страница не сдвинулась,
    иначе ложится на строку «Галерея работ». В залах и то и другое на месте. */
