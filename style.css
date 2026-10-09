@@ -167,6 +167,20 @@ body.show-plan .plan{display:flex}
   .index a{padding:var(--s1) 0}
 }
 
+/* ---------- притяжение прокрутки к стыкам залов ----------
+   Если палец отпущен недалеко от начала следующей секции, страница сама доводит её
+   до верха экрана — стык не остаётся висеть посередине. proximity, а не mandatory:
+   залы высокие (1136–1728 px против экрана 700), и mandatory запретил бы остановиться
+   внутри зала. Порог «недалеко» браузерный; замерено на живом: 120 px от стыка доводит,
+   300 px — уже нет. Только телефон: на большом экране с колесом это было бы навязчиво.
+   В залах заодно перестаёт ловиться половинчатое положение — притягивается начало зала,
+   а контент в секциях начинается ниже подписи студии (паддинги 64–128 px), поэтому
+   ничего не прячется под фиксированным брендом. */
+@media (max-width:767px){
+  html{scroll-snap-type:y proximity}
+  .cover,.spread,.posters,.about,.colophon{scroll-snap-align:start}
+}
+
 /* кнопка — типографская */
 .cta{display:inline-block;text-decoration:none;font:500 var(--t1)/1 var(--sans);
   letter-spacing:.2em;text-transform:uppercase;color:inherit;position:relative;padding-bottom:var(--s1)}
