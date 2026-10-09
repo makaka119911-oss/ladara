@@ -106,6 +106,22 @@
         requestAnimationFrame(function () { scrollTo(0, parseInt(y, 10) || 0); });
       }
     } catch (err) {}
+
+    /* На телефоне метка зала «висит» по формуле от высоты окна, а переключатель закреплён за
+       окном (position:fixed) — в CSS их в точности не свести (проценты считаются от разных
+       величин). Поэтому просто меряем, где стоит метка, и ставим переключатель на ту же строку:
+       две подписи вразрядку рядом выглядят как одна шапка, а вразнобой — как недоделка. */
+    var label = document.querySelector('.cover__lead .eyebrow');
+    if (label) {
+      var align = function () {
+        if (!matchMedia('(max-width:767px)').matches) { box.style.top = ''; return; }
+        var r = label.getBoundingClientRect();
+        box.style.top = Math.round(r.top + scrollY) + 'px';
+      };
+      align();
+      addEventListener('resize', align);
+      addEventListener('orientationchange', align);
+    }
   })();
 
   /* Ссылки внутри страницы: ведём полным путём, иначе на /en их перехватит <base> и клик
