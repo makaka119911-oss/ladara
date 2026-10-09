@@ -245,17 +245,18 @@
     var cover = document.querySelector('.cover');
     if (!cover || reduce) return null;
     var small = innerWidth < 768;
-    // размах считаем по запасу картинки: она выходит за края обложки на 3 % ширины (scale 1.06),
-    // больше сдвигать нельзя — обнажится полоса у края. Пятно света ходит шире: оно без границ.
-    var LX = small ? 16 : 30, LY = small ? 8 : 12;
-    var GX = small ? 110 : 170, GY = small ? 60 : 70;
+    // Ход отдан только свету: пятно ходит на 60 px по телефону, пыль — на треть этого хода.
+    // Фотографию не двигаем вовсе: мастер посмотрел усиленную версию — «двигается непонятно,
+    // не красиво», — поэтому картинка стоит на месте, а луч только наклоняется.
+    var GX = small ? 60 : 100, GY = small ? 34 : 44;
+    var DK = .35;                                  // доля хода, которую берёт пыль
     var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
 
     function apply() {
-      cover.style.setProperty('--lx', (cx * LX).toFixed(2) + 'px');
-      cover.style.setProperty('--ly', (cy * LY).toFixed(2) + 'px');
       cover.style.setProperty('--gx', (cx * GX).toFixed(2) + 'px');
       cover.style.setProperty('--gy', (cy * GY).toFixed(2) + 'px');
+      cover.style.setProperty('--dx', (cx * GX * DK).toFixed(2) + 'px');
+      cover.style.setProperty('--dy', (cy * GY * DK).toFixed(2) + 'px');
     }
     function loop() {
       cx += (tx - cx) * .12;
@@ -282,8 +283,7 @@
     addEventListener('touchend', rest, { passive: true });
     addEventListener('resize', function () {
       small = innerWidth < 768;
-      LX = small ? 16 : 30; LY = small ? 8 : 12;
-      GX = small ? 110 : 170; GY = small ? 60 : 70;
+      GX = small ? 60 : 100; GY = small ? 34 : 44;
       apply();
     });
     return { poke: poke, get: function () { return { x: cx, y: cy }; } };
