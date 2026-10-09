@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero-phone.webp?v=2" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 
@@ -136,8 +136,20 @@
   </div>
 </div>
 
-<script src="data.js?v=12"></script>
-<script src="script.js?v=30"></script>
+<!-- ЧЕРТЁЖ: схема «как это устроено». Отдельный слой поверх зала, потому что у схемы своя подача
+     (светлая тема, свои цвета) — это чужой язык рядом с тёмным музеем, в разворот её не ставим.
+     Файл ~750 КБ, поэтому адрес подставляется и грузится только при открытии. -->
+<div class="scheme" id="scheme" hidden>
+  <div class="scheme__head">
+    <p class="scheme__cap" id="schemeCap"></p>
+    <a class="cta scheme__open" id="schemeOpen" href="#" target="_blank" rel="noopener">Открыть в новой вкладке</a>
+  </div>
+  <div class="scheme__stage"><iframe id="schemeFrame" title="Схема устройства" loading="lazy"></iframe></div>
+  <button class="scheme__close" id="schemeClose" aria-label="Закрыть чертёж">✕</button>
+</div>
+
+<script src="data.js?v=13"></script>
+<script src="script.js?v=31"></script>
 <script src="dust.js?v=3"></script>
 </body>
 </html>
