@@ -23,9 +23,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="img/hero-phone.webp" media="(max-width:767px)">
+<link rel="preload" as="image" href="img/hero-phone.webp?v=2" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 
@@ -39,7 +39,7 @@
   <div class="cover__media">
     <picture>
       <source media="(min-width:768px)" srcset="img/hero-desk.webp">
-      <img src="img/hero-phone.webp" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
+      <img src="img/hero-phone.webp?v=2" alt="Тёмный музейный зал: золочёная рама в луче света, тёплый отблеск на паркете" fetchpriority="high">
     </picture>
     <!-- пыль в свете зала: рисуется из data.js (блок effects), без неё страница выглядит как раньше -->
     <canvas id="coverDust" aria-hidden="true"></canvas>
