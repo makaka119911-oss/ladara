@@ -225,7 +225,7 @@ window.MUSEUM = {
     hero: {
       kicker: 'Selected work',
       title: 'Apps, websites, \nbots',
-      offer: 'I build digital things: websites, apps and bots. By hand, without site builders.',
+      offer: 'I build digital things: websites, apps and bots. By hand, no site builders.',
       cta: 'Enter the gallery'
     },
     author: {
@@ -234,7 +234,7 @@ window.MUSEUM = {
       photoAlt: 'Portrait of the maker',
       text: [
         'I build websites, apps and bots. I work with Cursor and AI agents: they take the routine, the decisions stay with me.',
-        'I hand-code everything, without site builders — the code stays under control. What matters to me is that the thing works quietly, precisely and for a long time.'
+        'I hand-code everything, without site builders — the code stays under control. What matters to me is that it works quietly, precisely and lasts.'
       ]
     },
     outro: {
@@ -246,12 +246,12 @@ window.MUSEUM = {
     posters: {
       kicker: 'Print room',
       title: 'Posters',
-      lead: 'Posters for events — retreats, meditations, women’s circles. Composition and light — together with an AI generator, the type always set in real fonts.',
+      lead: 'Posters for events — retreats, meditations, women’s circles. Composition and light come from an AI generator; the type is always set in real fonts.',
       items: [
         { title: 'Time to slow down',            note: 'meditation in a castle · 11 October 2026' },
         { title: 'Find yourself within',         note: 'retreat · 17 October 2026 · Nemchinovka' },
         { title: 'Castle Barbecue',              note: 'queens’ evening · 25 October' },
-        { title: 'Opening of trust',             note: 'castle in Nemchinovka · 31 October 2026' },
+        { title: 'Opening to trust',             note: 'castle in Nemchinovka · 31 October 2026' },
         { title: 'Diving into sensuality',       note: 'level 2 · 31 October' },
         { title: 'Castle Barbecue',              note: 'queens’ evening · 4 October' },
         { title: 'Keys to the Enchanted Castle', note: 'three doors · 4 July 2026' },
