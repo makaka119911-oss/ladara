@@ -25,11 +25,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero-phone.webp?v=2" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero-desk.webp" media="(min-width:768px)">
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=36">
 </head>
 <body>
 
 <a class="brand" href="#top"><span>студия</span>LADARA</a>
+<!-- Переключатель языка: русский основной, английский — тем же адресом с ?lang=en.
+     Оформлен как подпись студии (вразрядку, мелкими), текущий язык подсвечен бронзой. -->
+<nav class="lang" id="lang" aria-label="Язык">
+  <a href="?lang=ru" data-lang="ru">RU</a><span aria-hidden="true">·</span><a href="?lang=en" data-lang="en">EN</a>
+</nav>
 <div class="rail" aria-hidden="true"><i id="railFill"></i></div>
 <div class="counter"><b id="hallNum">Обложка</b><span id="hallTotal"></span></div>
 <nav class="plan" id="plan" aria-label="План залов"></nav>
@@ -148,8 +153,8 @@
   <button class="scheme__close" id="schemeClose" aria-label="Закрыть чертёж">✕</button>
 </div>
 
-<script src="data.js?v=13"></script>
-<script src="script.js?v=31"></script>
+<script src="data.js?v=14"></script>
+<script src="script.js?v=34"></script>
 <script src="dust.js?v=3"></script>
 </body>
 </html>
