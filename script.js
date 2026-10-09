@@ -247,8 +247,8 @@
     var small = innerWidth < 768;
     // размах считаем по запасу картинки: она выходит за края обложки на 3 % ширины (scale 1.06),
     // больше сдвигать нельзя — обнажится полоса у края. Пятно света ходит шире: оно без границ.
-    var LX = small ? 9 : 26, LY = small ? 5 : 8;
-    var GX = small ? 48 : 90, GY = small ? 30 : 34;
+    var LX = small ? 16 : 30, LY = small ? 8 : 12;
+    var GX = small ? 110 : 170, GY = small ? 60 : 70;
     var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
 
     function apply() {
@@ -282,8 +282,8 @@
     addEventListener('touchend', rest, { passive: true });
     addEventListener('resize', function () {
       small = innerWidth < 768;
-      LX = small ? 9 : 26; LY = small ? 5 : 8;
-      GX = small ? 48 : 90; GY = small ? 30 : 34;
+      LX = small ? 16 : 30; LY = small ? 8 : 12;
+      GX = small ? 110 : 170; GY = small ? 60 : 70;
       apply();
     });
     return { poke: poke, get: function () { return { x: cx, y: cy }; } };
