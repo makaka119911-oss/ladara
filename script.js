@@ -135,6 +135,8 @@
   })();
 
   var works = (M.works || []).filter(function (w) { return w && w.title; });
+  // дыхание кадра на обложке выключается из данных (effects.breath = false)
+  if (M.effects && M.effects.breath === false) document.body.classList.add('no-breath');
   // настоящий вид работы (shot) важнее атмосферы зала — этап 2 только дописывает поле
   works.forEach(function (w) { if (w.shot) w.art = w.shot; });
 
