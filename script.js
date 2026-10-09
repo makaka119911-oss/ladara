@@ -275,12 +275,32 @@
     }
     function rest() { tx = 0; ty = 0; wake(); }
 
-    addEventListener('pointermove', function (e) { poke(e.clientX, e.clientY); }, { passive: true });
-    addEventListener('touchmove', function (e) {
-      var t = e.touches && e.touches[0]; if (t) poke(t.clientX, t.clientY);
+    addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;   // на телефоне любое касание — это прокрутка
+      poke(e.clientX, e.clientY);
     }, { passive: true });
-    addEventListener('pointerup', function (e) { if (e.pointerType === 'touch') rest(); }, { passive: true });
-    addEventListener('touchend', rest, { passive: true });
+
+    /* Телефон слушает не движение пальца, а КАСАНИЕ: палец опустился и не поехал.
+       Свайп — это прокрутка, и трогать в нём свет нельзя. Именно из-за этого выходило
+       «свайпаю вниз, а она в бок, да ещё и одинаково сильно»: свет ехал за пальцем
+       во время листания. Показали пальцем — свет постоял там и вернулся. */
+    var ts = null, holdT = 0;
+    addEventListener('touchstart', function (e) {
+      var t = e.touches && e.touches[0]; if (!t) return;
+      ts = { x: t.clientX, y: t.clientY, moved: false };
+    }, { passive: true });
+    addEventListener('touchmove', function (e) {
+      var t = e.touches && e.touches[0]; if (!ts || !t) return;
+      if (Math.abs(t.clientX - ts.x) > 8 || Math.abs(t.clientY - ts.y) > 8) ts.moved = true;
+    }, { passive: true });
+    addEventListener('touchend', function () {
+      if (ts && !ts.moved) {
+        poke(ts.x, ts.y);
+        clearTimeout(holdT);
+        holdT = setTimeout(rest, 1600);        // подержали и вернули
+      }
+      ts = null;
+    }, { passive: true });
     addEventListener('resize', function () {
       small = innerWidth < 768;
       GX = small ? 60 : 100; GY = small ? 34 : 44;
