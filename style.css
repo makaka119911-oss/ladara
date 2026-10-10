@@ -30,7 +30,11 @@
   --ease:cubic-bezier(.22,1,.36,1);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--wall)}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--wall);
+  /* Боковой жест на телефоне (системная отмашка «назад») выдёргивал браузерную подложку — поверх
+     зала проходила почти белая полоса. Своей горизонтальной прокрутки у сайта нет, поэтому гасим
+     край: жест больше не уводит со страницы. Прокрутка вниз-вверх от этого не меняется. */
+  overscroll-behavior-x:none}
 body{
   margin:0;color:var(--ink);font:400 var(--t3)/1.6 var(--sans);-webkit-font-smoothing:antialiased;
   background-color:var(--wall);
