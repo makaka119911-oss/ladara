@@ -31,10 +31,20 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--wall);
+  /* dark: страница тёмная, и браузер должен это знать — иначе он рисует СВОИ светлые элементы
+     (полосу прокрутки в первую очередь) и они читаются как белая полоса поверх зала. */
+  color-scheme:dark;
   /* Боковой жест на телефоне (системная отмашка «назад») выдёргивал браузерную подложку — поверх
      зала проходила почти белая полоса. Своей горизонтальной прокрутки у сайта нет, поэтому гасим
      край: жест больше не уводит со страницы. Прокрутка вниз-вверх от этого не меняется. */
   overscroll-behavior-x:none}
+/* Полоса прокрутки — своя, тёмная: у тёмной страницы светлая полоса браузера выглядит случайной
+   белой чертой у правого края. На телефоне это оверлейная полоса, её браузер красит по color-scheme;
+   здесь — для больших экранов, где полоса реально видна. */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:rgba(21,18,15,.6)}
+::-webkit-scrollbar-thumb{background:rgba(201,161,94,.35);border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:rgba(201,161,94,.6)}
 body{
   margin:0;color:var(--ink);font:400 var(--t3)/1.6 var(--sans);-webkit-font-smoothing:antialiased;
   background-color:var(--wall);
