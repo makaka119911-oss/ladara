@@ -155,11 +155,30 @@ window.MUSEUM = {
       scheme: 'schemes/zhenskiy-mir.html'
     },
 
-    /* Зал IV — не работа, а приглашение: вместо картины пустая рама того же багета, а в табличке
+    /* Зал IV — первая работа студии для клиента: благотворительный фонд. */
+    {
+      num: '04',
+      hall: 'IV',
+      title: 'Фонд «Созвездие Пегаса»',
+      line: 'Сайт благотворительного фонда: три направления помощи, отчёты, волонтёрская форма.',
+      accent: '#9a3b2a',
+      art: 'img/hall-pegas.jpg',
+      shot: null,
+      stub: false,
+      facts: {
+        what: 'сайт благотворительного фонда, 15 страниц',
+        made: 'Tilda, Vibe-блоки, свой CSS и JavaScript',
+        state: 'в сети'
+      },
+      url: 'https://sozvezdiepegasa.tilda.ws/',
+      urlLabel: 'Открыть сайт'
+    },
+
+    /* Зал V — не работа, а приглашение: вместо картины пустая рама того же багета, а в табличке
        под ней — что здесь может висеть. Так экспозиция кончается не тупиком, а свободным местом.
        Числа и название в перечне работ на обложке появляются сами (см. script.js). */
     {
-      num: '04', hall: 'IV',
+      num: '05', hall: 'V',
       title: 'Ваш проект',
       line: 'Сайт, приложение или бот. Эта рама пока пустая — в неё встанет ваша работа.',
       accent: '#7a5a2e',
@@ -286,6 +305,12 @@ window.MUSEUM = {
         facts: { what: 'an app for women (PWA), closed beta', made: 'React, Node.js, PostgreSQL, Redis, Docker', state: 'live' },
         urlLabel: 'Open the app',
         scheme: 'schemes/zhenskiy-mir-en.html'
+      },
+      {
+        title: 'Pegasus Constellation Fund',
+        line: 'A charity foundation’s site: three directions of help, reports, a volunteer form.',
+        facts: { what: 'a charity foundation site, 15 pages', made: 'Tilda, Vibe blocks, custom CSS and JavaScript', state: 'live' },
+        urlLabel: 'Open the site'
       },
       {
         title: 'Your project',
