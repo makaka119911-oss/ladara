@@ -422,6 +422,14 @@ body.show-plan .plan{display:flex}
   text-transform:uppercase;padding-top:2px}
 .viewer__info dd{margin:0}
 @media (max-width:767px){ .viewer__info>div{grid-template-columns:1fr} }
+/* ссылка на живую работу прямо из просмотра: в том же багетном стиле, что кнопки зала */
+.viewer__go{justify-self:center;margin-top:var(--s2);display:inline-flex;align-items:center;gap:6px;
+  min-height:44px;padding:var(--s2) var(--s4);text-decoration:none;
+  font:500 var(--t1)/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bronze);border:1px solid rgba(201,161,94,.45);border-radius:999px;
+  transition:border-color .3s var(--ease),color .3s var(--ease),background .3s var(--ease)}
+.viewer__go:hover,.viewer__go:focus-visible{border-color:var(--bronze);color:#0f0d0b;background:var(--bronze)}
+.viewer__go span{font-size:.85em;letter-spacing:0}
 /* листовка с двумя сторонами: кнопка переворота стоит в подписи просмотра */
 .viewer__flip{justify-self:center;margin-top:var(--s2);cursor:pointer;
   font:500 var(--t1)/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;
@@ -527,8 +535,10 @@ body.show-plan .plan{display:flex}
   .cover__inner{gap:24px}
 }
 
-/* Телефон: кадр обложки сдвинут влево — дверь уходит от центра, справа остаётся воздух под текст.
-   object-position, а не transform: картинка «в обрез», сдвиг рамкой кадра не открывает пустых краёв. */
+/* Телефон: кадр обложки сдвинут влево — дверь уходит от центра, справа остаётся воздух под текст. */
 @media (max-width: 767px){
-  .cover__media img{object-position:72% 40%}
+  .cover__media img{
+    object-position:95% 40%;
+    transform:translate3d(0, calc(var(--py, 0px) - 26px), 0) scale(1.16);
+  }
 }
