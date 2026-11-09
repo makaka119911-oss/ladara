@@ -549,6 +549,17 @@
     tick = true;
     requestAnimationFrame(function () { frame(); tick = null; });
   }, { passive: true });
+
+  /* RU/EN: вниз по странице — переключатель плавно уходит, движение вверх — возвращается.
+     Порог 6 px отсекает дрожание инерционной прокрутки, иначе он мигает. */
+  var lastY = scrollY, langOff = false;
+  addEventListener('scroll', function () {
+    var y = scrollY;
+    if (Math.abs(y - lastY) < 6) return;
+    var off = y > lastY && y > 40;   // вниз и уже не на первом экране
+    lastY = y;
+    if (off !== langOff) { langOff = off; document.body.classList.toggle('lang-hidden', off); }
+  }, { passive: true });
   addEventListener('resize', frame);
   frame();
   setInterval(frame, 500);        // страховка: счётчик жив и там, где кадры заморожены
