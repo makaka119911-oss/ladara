@@ -517,3 +517,9 @@ body.show-plan .plan{display:flex}
   .cover__inner{padding:0 var(--pad);align-content:start;align-items:start;height:auto}
   .cover__lead{padding-top:0}
 }
+
+/* Совсем низкие экраны (телефон с адресной строкой): поджимаем верх, чтобы экспозиция ещё влезала. */
+@media (max-width: 640px) and (max-height: 660px){
+  header.cover{padding:72px 0 24px}
+  .cover__inner{gap:24px}
+}
