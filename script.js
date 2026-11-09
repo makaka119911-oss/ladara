@@ -680,7 +680,8 @@
     if (w.stub || !w.art) return;
     var plate = document.querySelector('#hall-' + (i + 1) + ' .plate');
     if (plate) book.push({ el: plate, art: w.art, title: w.title,
-                           cap: w.title + ' · ' + UI.hall + ' ' + (w.hall || ''), facts: w.facts });
+                           cap: w.title + ' · ' + UI.hall + ' ' + (w.hall || ''), facts: w.facts,
+                           url: w.url, urlLabel: w.urlLabel });
   });
   posterItems.forEach(function (p, i) {
     var card = document.getElementById('poster-' + i);
@@ -875,6 +876,13 @@
     infoBox.innerHTML = [[UI.factsWhat, f.what], [UI.factsMade, f.made], [UI.factsState, f.state]]
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
+    // Ссылка на саму работу: в зале она есть, а здесь, в режиме «рассмотреть», терялась —
+    // человек уже разглядывает экспонат, и уйти на живой сайт ему удобнее отсюда, а не закрывая просмотр.
+    if (item.url) {
+      infoBox.insertAdjacentHTML('beforeend',
+        '<a class="viewer__go" href="' + item.url + '" target="_blank" rel="noopener">' +
+        (item.urlLabel || UI.openSite || 'Открыть сайт') + '<span aria-hidden="true"> ↗</span></a>');
+    }
     // Листовка с двумя сторонами: кнопка в подписи переворачивает её.
     // Сторона живёт в самом экспонате, поэтому при повторном открытии снова лицевая.
     item.side = 0;
