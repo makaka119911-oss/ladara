@@ -511,6 +511,9 @@ body.show-plan .plan{display:flex}
    Лечим: на узких экранах метка встаёт в обычный поток, над заголовком. */
 @media (max-width: 640px){
   .cover__lead .eyebrow{position:static;top:auto;margin:0 0 var(--s2)}
-  /* и не подлезает под неподвижную подпись студии сверху (она занимает 24–53 px) */
-  .cover__lead{padding-top:72px}
+  /* На телефоне обложка не растягивается на весь экран: иначе сетка прижимает текст к низу,
+     и под подписью студии повисает пустая полоса в 88 px. Пусть блок идёт сверху вниз своим ходом. */
+  header.cover{box-sizing:border-box;height:auto;min-height:100svh;padding:84px 0 40px}
+  .cover__inner{padding:0;align-content:start;align-items:start;height:auto}
+  .cover__lead{padding-top:0}
 }
