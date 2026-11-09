@@ -503,3 +503,14 @@ body.show-plan .plan{display:flex}
 .poster__cap{margin-top:var(--s2);font-size:var(--t2);color:var(--dim)}
 .poster__cap b{display:block;font-family:var(--serif);font-weight:400;font-size:var(--t3);color:var(--ink)}
 .poster:hover img{box-shadow:0 44px 90px -40px #000,0 0 70px -30px rgba(201,161,94,.55)}
+
+/* Правка 09.11: на телефоне метка «Галерея работ» налезала на заголовок.
+   Причина: метка позиционирована абсолютно от верха блока (top: 12%), а заголовок
+   прижат к низу. Когда экран низкий (адресная строка + панель браузера), свободного
+   места не хватает и заголовок поднимается на метку — на 360×600 наложение 12 px.
+   Лечим: на узких экранах метка встаёт в обычный поток, над заголовком. */
+@media (max-width: 640px){
+  .cover__lead .eyebrow{position:static;top:auto;margin:0 0 var(--s2)}
+  /* и не подлезает под неподвижную подпись студии сверху (она занимает 24–53 px) */
+  .cover__lead{padding-top:72px}
+}
