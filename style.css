@@ -596,14 +596,34 @@ body.show-plan .plan{display:flex}
   .index__l{display:none}
 }
 
-/* Кнопка «Обсудить проект» на обложке: была текстовой ссылкой высотой 20 px —
-   на телефоне в такую не попасть пальцем. Даём рамку в багетном стиле и высоту 44 px.
-   Латунь на тёмной стене: контраст 7.4:1 (норма WCAG AA — 4.5:1). */
+/* Кнопка «Обсудить проект» на обложке: белый текст с подчёркиванием и тёплым
+   свечением — как лампа над работой в зале. Свечение статичное: не анимация,
+   при prefers-reduced-motion остаётся как есть.
+   Высота 44 px — тап-цель для пальца; контраст белого на стене 12.6:1. */
 .cover .cta.main-cta{display:inline-flex;align-items:center;justify-content:center;
-  min-height:44px;padding:0 var(--s4);margin-top:var(--s4);
-  border:1px solid rgba(201,161,94,.55);border-radius:2px;color:var(--bronze,#c9a15e);
-  font:500 var(--t1)/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
-  transition:background .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease)}
-.cover .cta.main-cta::after{display:none}
-.cover .cta.main-cta:hover,.cover .cta.main-cta:focus-visible{
-  background:var(--bronze,#c9a15e);border-color:var(--bronze,#c9a15e);color:#1a140e}
+  min-height:44px;padding:0 var(--s2);margin-top:var(--s4);
+  color:#f4efe6;font:500 var(--t1)/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  text-shadow:0 0 14px rgba(201,161,94,.55),0 0 34px rgba(201,161,94,.28);
+  transition:text-shadow .45s var(--ease),color .45s var(--ease)}
+.cover .cta.main-cta::after{display:block;height:1px;background:currentColor;opacity:.5;
+  box-shadow:0 0 7px rgba(201,161,94,.85),0 0 16px rgba(201,161,94,.45);
+  transition:transform .5s var(--ease),opacity .5s var(--ease),box-shadow .5s var(--ease)}
+.cover .cta.main-cta:hover,.cover .cta.main-cta:focus-visible{color:#fff;
+  text-shadow:0 0 16px rgba(201,161,94,.85),0 0 40px rgba(201,161,94,.5),0 0 70px rgba(201,161,94,.25)}
+.cover .cta.main-cta:hover::after,.cover .cta.main-cta:focus-visible::after{opacity:1;
+  box-shadow:0 0 10px rgba(201,161,94,1),0 0 22px rgba(201,161,94,.65)}
+@media (prefers-reduced-motion:reduce){
+  .cover .cta.main-cta,.cover .cta.main-cta::after{transition:none}
+}
+
+/* Телефон: кнопка «Обсудить проект» была шире стены — кончалась на 240 px,
+   а рама начинается с 208. Сужаем отступы и трекинг, чтобы влезла в 62% ширины. */
+@media (max-width:767px){
+  .cover .cta.main-cta{padding:0;letter-spacing:.08em;font-size:11px;max-width:60%;
+    margin-top:var(--s2);min-height:42px}
+}
+/* Низкие телефоны: кнопка выросла в высоту и поджала список — убираем лишний воздух. */
+@media (max-width:767px) and (max-height:860px){
+  .cover__offer{margin-top:var(--s2)}
+  .cover .cta.main-cta{margin-top:var(--s2)}
+}
