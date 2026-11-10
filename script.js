@@ -130,8 +130,8 @@
     var here = location.pathname;
     var brand = document.querySelector('.brand');
     if (brand) brand.setAttribute('href', here + '#top');
-    var cta = document.getElementById('coverCta');
-    if (cta) cta.setAttribute('href', here + '#hall-1');
+    /* Кнопка на обложке ведёт в Telegram — внешняя ссылка, путь не переписываем:
+       иначе <base> на /en превратит её в локальную и клик перезагрузит страницу. */
   })();
 
   var works = (M.works || []).filter(function (w) { return w && w.title; });

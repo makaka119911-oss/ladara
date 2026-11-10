@@ -16,7 +16,7 @@ window.MUSEUM = {
        в одно непереносимое слово 253 px — оно вылезало за 62 % и заезжало на раму на 45 px */
     title: 'Приложения, \nсайты, боты',
     offer: 'Собираю цифровые вещи: сайты, приложения, ботов. Вручную, без конструкторов.',
-    cta: 'Войти в галерею',
+    cta: 'Обсудить проект',
     image: 'img/hero-phone.jpg',     // телефон
     imageDesk: 'img/hero-desk.jpg'   // десктоп
   },
@@ -246,7 +246,7 @@ window.MUSEUM = {
       kicker: 'Selected work',
       title: 'Apps, websites, \nbots',
       offer: 'I build digital things: websites, apps and bots. By hand, no site builders.',
-      cta: 'Enter the gallery'
+      cta: 'Discuss a project'
     },
     author: {
       kicker: 'The keeper',
